@@ -2,9 +2,9 @@
 
 namespace FaizanSf\LaravelMetafields\Tests;
 
+use FaizanSf\LaravelMetafields\LaravelMetafieldsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use FaizanSf\LaravelMetafields\LaravelMetafieldsServiceProvider;
 
 class TestCase extends Orchestra
 {

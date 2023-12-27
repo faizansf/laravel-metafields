@@ -2,9 +2,9 @@
 
 namespace FaizanSf\LaravelMetafields;
 
+use FaizanSf\LaravelMetafields\Commands\LaravelMetafieldsCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use FaizanSf\LaravelMetafields\Commands\LaravelMetafieldsCommand;
 
 class LaravelMetafieldsServiceProvider extends PackageServiceProvider
 {
