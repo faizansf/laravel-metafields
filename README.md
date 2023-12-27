@@ -1,4 +1,4 @@
-# This is my package laravel-metafields
+# Laravel Metafields
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/faizansf/laravel-metafields.svg?style=flat-square)](https://packagist.org/packages/faizansf/laravel-metafields)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/faizansf/laravel-metafields/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/faizansf/laravel-metafields/actions?query=workflow%3Arun-tests+branch%3Amain)
