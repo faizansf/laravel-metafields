@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace FaizanSf\LaravelMetafields;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
+use FaizanSf\LaravelMetafields\Commands\LaravelMetafieldsCommand;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class LaravelMetafieldsServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -16,10 +16,10 @@ class SkeletonServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('skeleton')
+            ->name('laravel-metafields')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_skeleton_table')
-            ->hasCommand(SkeletonCommand::class);
+            ->hasMigration('create_laravel-metafields_table')
+            ->hasCommand(LaravelMetafieldsCommand::class);
     }
 }

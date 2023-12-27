@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace FaizanSf\LaravelMetafields\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelMetafieldsCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-metafields';
 
     public $description = 'My command';
 
