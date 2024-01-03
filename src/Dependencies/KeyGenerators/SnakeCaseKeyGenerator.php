@@ -9,6 +9,6 @@ class SnakeCaseKeyGenerator implements KeyGeneratorContract
 
     public function generate(string $key): string
     {
-        // TODO: Implement generate() method.
+        return "";
     }
 }
