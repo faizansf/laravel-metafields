@@ -5,5 +5,5 @@ return [
 
     'model_column_name' => 'model',
 
-    'unserialize_allowed_class' => []
+    'unserialize_allowed_class' => [],
 ];

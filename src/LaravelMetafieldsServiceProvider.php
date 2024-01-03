@@ -14,6 +14,6 @@ class LaravelMetafieldsServiceProvider extends PackageServiceProvider
             ->name('laravel-metafields')
             ->hasConfigFile()
             ->hasMigration('create_metafields_table');
-//            ->hasCommand(LaravelMetafieldsCommand::class);
+        //            ->hasCommand(LaravelMetafieldsCommand::class);
     }
 }

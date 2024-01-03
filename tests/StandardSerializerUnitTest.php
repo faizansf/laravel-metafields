@@ -3,7 +3,7 @@
 use FaizanSf\LaravelMetafields\Dependencies\Serializers\StandardSerializer;
 use FaizanSf\LaravelMetafields\Models\MetaField;
 
-it('can serialize string using standard serializer', function (mixed $testSubject){
+it('can serialize string using standard serializer', function (mixed $testSubject) {
     $serializer = new StandardSerializer();
 
     $serializedString = $serializer->serialize($testSubject);
@@ -11,7 +11,7 @@ it('can serialize string using standard serializer', function (mixed $testSubjec
     expect($serializedString)->toEqual(serialize($testSubject));
 })->with('testSubjects');
 
-it('can unserialize string using standard serializer', function (mixed $testSubject){
+it('can unserialize string using standard serializer', function (mixed $testSubject) {
     $serializer = new StandardSerializer();
 
     $serializedString = serialize($testSubject);
@@ -36,7 +36,7 @@ it('can unserialize string using standard serializer', function (mixed $testSubj
         ->and($unserializeString)->toEqual($testSubject);
 })->with('testSubjects');
 
-it('will unserialize not allowed objects into __PHP_Incomplete_Class', function(){
+it('will unserialize not allowed objects into __PHP_Incomplete_Class', function () {
     config('metafields.unserialize_allowed_class', []);
 
     $serializer = new StandardSerializer();
@@ -49,8 +49,8 @@ it('will unserialize not allowed objects into __PHP_Incomplete_Class', function(
 
 });
 
-it('will unserialize allowed objects', function(){
-    config('metafields.unserialize_allowed_class', [ MetaField::class ]);
+it('will unserialize allowed objects', function () {
+    config('metafields.unserialize_allowed_class', [MetaField::class]);
     $serializer = new StandardSerializer();
 
     $object = new MetaField();
@@ -73,7 +73,5 @@ dataset('testSubjects', [
     1,
     '10.4',
     45.5,
-    null
+    null,
 ]);
-
-

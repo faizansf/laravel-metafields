@@ -10,6 +10,7 @@ class MetaField extends Model implements MetaFieldContract
 {
     /**
      * Mass assignable attributes
+     *
      * @var array<int, string>
      */
     protected $fillable = ['key', 'value'];
@@ -33,8 +34,6 @@ class MetaField extends Model implements MetaFieldContract
 
     /**
      * The model relationship.
-     *
-     * @return MorphTo
      */
     public function model(): MorphTo
     {

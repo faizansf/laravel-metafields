@@ -10,7 +10,6 @@ trait HasMetaFields
 {
     /**
      * Meta fields relation
-     * @return MorphMany
      */
     public function metaFields(): MorphMany
     {
@@ -19,8 +18,6 @@ trait HasMetaFields
 
     /**
      * Get a single meta field value
-     * @param string|BackedEnum $key
-     * @return string
      */
     public function getMetaField(string|BackedEnum $key): string
     {
@@ -29,7 +26,6 @@ trait HasMetaFields
 
     /**
      * Get All Meta fields of a model in key=>value pair
-     * @return Collection
      */
     public function getAllMetaFields(): Collection
     {
@@ -38,9 +34,6 @@ trait HasMetaFields
 
     /**
      * Set a Metafield value
-     * @param string|BackedEnum $key
-     * @param $value
-     * @return bool
      */
     public function setMetaField(string|BackedEnum $key, $value): bool
     {
@@ -49,12 +42,9 @@ trait HasMetaFields
 
     /**
      * Delete Metafield by key
-     * @param string|BackedEnum $key
-     * @return bool
      */
     public function deleteMetaField(string|BackedEnum $key): bool
     {
 
     }
-
 }

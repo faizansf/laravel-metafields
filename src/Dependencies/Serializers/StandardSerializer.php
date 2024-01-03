@@ -19,7 +19,7 @@ class StandardSerializer implements SerializerContract
         ));
 
         return unserialize($serialized, [
-            'allowed_classes' => $allowedClasses
+            'allowed_classes' => $allowedClasses,
         ]);
     }
 }

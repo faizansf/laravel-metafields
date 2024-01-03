@@ -4,11 +4,11 @@ namespace FaizanSf\LaravelMetafields;
 
 use FaizanSf\LaravelMetafields\Contracts\KeyGenerator;
 use FaizanSf\LaravelMetafields\Contracts\Serializer;
-use FaizanSf\LaravelMetafields\Contracts\MetaField;
 
 class LaravelMetafields
 {
-    protected static bool $cacheEnabled =  true;
+    protected static bool $cacheEnabled = true;
+
     protected string $cacheKeyPrefix = '';
 
     public function __construct(
@@ -42,10 +42,10 @@ class LaravelMetafields
 
     }
 
-    protected function getCacheKey($key){
+    protected function getCacheKey($key)
+    {
 
     }
-
 
     protected function prepareValue()
     {
