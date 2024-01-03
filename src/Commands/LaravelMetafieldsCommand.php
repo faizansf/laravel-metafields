@@ -6,9 +6,9 @@ use Illuminate\Console\Command;
 
 class LaravelMetafieldsCommand extends Command
 {
-    public $signature = 'laravel-metafields';
+    public $signature = 'make:metafield';
 
-    public $description = 'My command';
+    public $description = 'Create a metafield class';
 
     public function handle(): int
     {
