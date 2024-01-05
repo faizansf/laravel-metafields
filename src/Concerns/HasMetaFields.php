@@ -15,6 +15,7 @@ trait HasMetaFields
     public static function bootHasMetaFields(LaravelMetafields $metaField): void
     {
     }
+
     /**
      * Meta fields relation
      */

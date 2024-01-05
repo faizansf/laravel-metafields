@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FaizanSf\LaravelMetafields;
 
-use FaizanSf\LaravelMetafields\Commands\LaravelMetafieldsCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
