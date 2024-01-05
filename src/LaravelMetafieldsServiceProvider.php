@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FaizanSf\LaravelMetafields;
 
 use FaizanSf\LaravelMetafields\Commands\LaravelMetafieldsCommand;
@@ -14,6 +16,5 @@ class LaravelMetafieldsServiceProvider extends PackageServiceProvider
             ->name('laravel-metafields')
             ->hasConfigFile()
             ->hasMigration('create_metafields_table');
-        //            ->hasCommand(LaravelMetafieldsCommand::class);
     }
 }

@@ -1,13 +1,20 @@
 <?php
 
-namespace FaizanSf\LaravelMetafields\Models;
+declare(strict_types=1);
+
+namespace FaizanSf\LaravelMetafields\Concerns;
 
 use BackedEnum;
+use FaizanSf\LaravelMetafields\Facades\LaravelMetafields;
+use FaizanSf\LaravelMetafields\Models\MetaField;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 
 trait HasMetaFields
 {
+    public static function bootHasMetaFields(LaravelMetafields $metaField): void
+    {
+    }
     /**
      * Meta fields relation
      */
@@ -19,9 +26,9 @@ trait HasMetaFields
     /**
      * Get a single meta field value
      */
-    public function getMetaField(string|BackedEnum $key): string
+    public function getMetaField(string|BackedEnum $key): mixed
     {
-
+        return LaravelMetafields::get($this, $key);
     }
 
     /**

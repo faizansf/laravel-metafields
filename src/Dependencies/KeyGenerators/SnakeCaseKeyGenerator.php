@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FaizanSf\LaravelMetafields\Dependencies\KeyGenerators;
 
 use FaizanSf\LaravelMetafields\Contracts\KeyGenerator as KeyGeneratorContract;

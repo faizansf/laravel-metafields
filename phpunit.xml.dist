@@ -20,6 +20,12 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <server name="APP_KEY" value="base64:xurPFkOmf5GHzDiD/jLw6DAETwp+wMXKUHX1+wsmLeo="/>
+        <server name="DB_CONNECTION" value="sqlite"/>
+        <server name="DB_DATABASE" value=":memory:"/>
+        <server name="CACHE_DRIVER" value="array"/>
+    </php>
     <coverage>
         <report>
             <html outputDirectory="build/coverage"/>

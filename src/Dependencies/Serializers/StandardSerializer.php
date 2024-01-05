@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FaizanSf\LaravelMetafields\Dependencies\Serializers;
 
 use FaizanSf\LaravelMetafields\Contracts\Serializer as SerializerContract;

@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FaizanSf\LaravelMetafields\Models;
 
-use FaizanSf\LaravelMetafields\Contracts\MetaField as MetaFieldContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class MetaField extends Model implements MetaFieldContract
+class MetaField extends Model
 {
     /**
      * Mass assignable attributes
