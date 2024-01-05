@@ -10,6 +10,6 @@ class KebabCaseKeyGenerator implements KeyGeneratorContract
 {
     public function generate(string $key): string
     {
-        return "";
+        return '';
     }
 }
