@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FaizanSf\LaravelMetafields\Models;
 
+use FaizanSf\LaravelMetafields\Dependencies\Serializers\StandardSerializer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -23,15 +24,6 @@ class MetaField extends Model
      */
     protected $hidden = ['model_type', 'model_id'];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'model_id' => 'integer',
-    ];
 
     /**
      * The model relationship.
@@ -44,6 +36,11 @@ class MetaField extends Model
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
+
+
+        $this->casts = [
+            'value' => config('metafields.value_serializer')
+        ];
 
         $this->setTable(config('metafields.table'));
     }

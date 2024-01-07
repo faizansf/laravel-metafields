@@ -6,10 +6,13 @@ declare(strict_types=1);
 namespace FaizanSf\LaravelMetafields;
 
 use BackedEnum;
-use FaizanSf\LaravelMetafields\Contracts\MetaFields;
+use FaizanSf\LaravelMetafields\Contracts\MetaFieldable;
 use FaizanSf\LaravelMetafields\Contracts\Serializer;
 use FaizanSf\LaravelMetafields\Exceptions\InvalidKeyException;
+use FaizanSf\LaravelMetafields\Models\MetaField;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 
 class LaravelMetafields
@@ -18,45 +21,56 @@ class LaravelMetafields
 
     protected string $cacheKeyPrefix = '';
 
-    public function __construct(
-        protected Serializer $serializer,
-    )
-    {
-    }
-
-
     /**
-     * Retrieves and unserializes the value associated with the given key from the specified MetaFields model.
+     * Retrieves the value associated with the given key from the specified MetaFields model.
      *
-     * @param MetaFields $model The MetaFields model from which to retrieve the value.
+     * @param MetaFieldable $model The MetaFields model from which to retrieve the value.
      * @param string|BackedEnum $key The key to retrieve the value for. Can be either a string or a BackedEnum instance.
      * @return mixed The retrieved value.
+     * @throws InvalidKeyException
      */
-    public function getMetaFieldValue(MetaFields $model, string|BackedEnum $key): mixed
+    public function getMetaFieldValue(MetaFieldable $model, string|BackedEnum $key): mixed
     {
-        return $this->unserialize(
-            $this->getValue($model,
-                $this->normalizeKeyIfEnum($key)
-            ));
+        return $this->getValue($model,
+            $this->normalizeKeyIfEnum($key)
+        );
     }
 
 
     /**
-     * Sets the serialized value for the specified key in the given MetaFields model.
+     * Sets the value for the specified key in the given MetaFields model.
      *
-     * @param MetaFields $model The MetaFields model in which to set the value.
+     * @param MetaFieldable $model The MetaFields model in which to set the value.
      * @param string|BackedEnum $key The key for which to set the value. Can be either a string or a BackedEnum instance.
      * @param mixed $value The value to set. It can be of any type.
-     * @return mixed The updated value.
+     * @return MetaField The stored meta field.
+     * @throws InvalidKeyException
      */
-    public function setMetaFieldValue(MetaFields $model, string|BackedEnum $key, mixed $value): mixed
+    public function setMetaFieldValue(MetaFieldable $model, string|BackedEnum $key, mixed $value): MetaField
     {
         $key = $this->normalizeKeyIfEnum($key);
 
-        $serialized = $this->serializer->serialize($value);
+        $metaField = $this->setValue($model, $key, $value);
 
-        return $this->setValue($model, $key, $serialized);
+        if($this->cacheEnabled){
+            $this->clearCacheByKey($model, $key);
+        }
+
+        return $metaField;
     }
+
+
+    /**
+     * Retrieves all the meta fields for the given model in key-value format
+     *
+     * @param MetaFieldable $model
+     * @return Collection
+     */
+    public function getAllMetaFields(MetaFieldable $model): Collection
+    {
+        return $model->metaFields->pluck('value', 'key');
+    }
+
 
     /**
      * Enables the cache for the current instance.
@@ -86,27 +100,13 @@ class LaravelMetafields
 
 
     /**
-     * Sets the cache key prefix for the current instance.
-     *
-     * @param string $prefix The cache key prefix to be set.
-     * @return self Returns the current instance of the class.
-     */
-    public function setCacheKeyPrefix(string $prefix = ''): self
-    {
-        $this->cacheKeyPrefix = $prefix;
-
-        return $this;
-    }
-
-
-    /**
      * Retrieves the value associated with the given key from the specified MetaFields model.
      *
-     * @param MetaFields $model The MetaFields model from which to retrieve the value.
+     * @param MetaFieldable $model The MetaFields model from which to retrieve the value.
      * @param mixed $key The key to retrieve the value for.
      * @return mixed|null The retrieved value, or null if the key is not found.
      */
-    protected function getValue(MetaFields $model, $key): mixed
+    protected function getValue(MetaFieldable $model, $key): mixed
     {
         return $model->metaFields->first(function ($item, $key) use ($key) {
             return $item->key === $key;
@@ -117,12 +117,12 @@ class LaravelMetafields
     /**
      * Sets the value associated with the given key in the specified MetaFields model.
      *
-     * @param MetaFields $model The MetaFields model in which to set the value.
+     * @param MetaFieldable $model The MetaFields model in which to set the value.
      * @param string $key The key to set the value for.
      * @param mixed $value The value to be set.
      * @return Model The newly created MetaFields model.
      */
-    protected function setValue(MetaFields $model, string $key, mixed $value): Model
+    protected function setValue(MetaFieldable $model, string $key, mixed $value): MetaField
     {
         return $model->metaFields()->create([
             'key' => $key,
@@ -142,42 +142,39 @@ class LaravelMetafields
     {
         if ($key instanceof BackedEnum) {
             $value = $key->value;
+
             if (!is_string($value)) {
-                throw new InvalidKeyException('Expected $key to be of type string. Got ' . gettype($value));
+                throw InvalidKeyException::withMessage(key: $value);
             }
 
-            $key = $value;
+            return $value;
         }
 
         return $key;
     }
 
-
     /**
-     * Serializes the given value.
+     * Clears the cache for the given model and the given key.
      *
-     * @param mixed $value The value to be serialized.
-     * @return string The serialized value.
+     * @param MetaFieldable $model The model for which to clear the cache.
+     * @param string $key The key for which to clear the cache.
      */
-    protected function serialize(mixed $value): string
+    protected function clearCacheByKey(MetaFieldable $model, string $key): void
     {
-        return $this->serializer->serialize($value);
-    }
-
-    /**
-     * Unserializes the given value using the Serializer.
-     *
-     * @param mixed $value The value to unserialize.
-     * @return mixed The unserialized value.
-     */
-    protected function unserialize(mixed $value): mixed
-    {
-        return $this->serializer->unserialize($value);
+        $cacheKey = $this->getCacheKey($model, $key);
+        Cache::forget($cacheKey);
     }
 
 
-    protected function getCacheKey($key): string
+    /**
+     * Constructs the cache key for storing metafields.
+     *
+     * @param MetaFieldable $model The model instance.
+     * @param mixed $key The cache key.
+     * @return string The constructed cache key.
+     */
+    protected function getCacheKey(MetaFieldable $model, string $key): string
     {
-
+        return config('metafields.cache_key_prefix') . $model::class . "::" . $key;
     }
 }

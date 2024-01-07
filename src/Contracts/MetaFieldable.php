@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 /**
  * @property-read \Illuminate\Database\Eloquent\Collection|MetaField[] $metaFields
  */
-interface MetaFields
+interface MetaFieldable
 {
     public function metaFields(): MorphMany;
     /**
