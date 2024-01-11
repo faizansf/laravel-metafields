@@ -13,6 +13,10 @@ class StandardSerializer implements CastsAttributes
 {
     public function get(Model $model, string $key, mixed $value, array $attributes)
     {
+        return json_decode($value, true);
+        //get Attribute value based on that cast
+        //Merge Cast in Model
+
         $allowedClasses = Arr::wrap(config(
             'metafields.unserialize_allowed_class', []
         ));

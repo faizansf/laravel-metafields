@@ -39,9 +39,10 @@ class MetaField extends Model
 
 
         $this->casts = [
-            'value' => config('metafields.value_serializer')
+            //'value' => config('metafields.value_serializer'),
         ];
 
         $this->setTable(config('metafields.table'));
     }
+
 }

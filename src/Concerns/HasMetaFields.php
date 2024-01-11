@@ -14,14 +14,26 @@ trait HasMetaFields
 {
     public static bool $cacheEnabled = true;
 
-    public static function bootHasMetaFields(LaravelMetafields $metaField): void
-    {}
     /**
      * Meta fields relation
      */
     public function metaFields(): MorphMany
     {
         return $this->morphMany(MetaField::class, config('metafields.model_column_name'));
+    }
+
+    public function getCacheTtl(): int|null
+    {
+        if(property_exists($this, 'ttl')){
+            return $this->ttl;
+        }
+
+        return null;
+    }
+
+    public function hasMetaField(): bool
+    {
+        return LaravelMetafields::hasMetafields($this);
     }
 
     /**
@@ -43,7 +55,7 @@ trait HasMetaFields
     /**
      * Set a Metafield value
      */
-    public function setMetaField(string|BackedEnum $key, $value): bool
+    public function setMetaField(string|BackedEnum $key, $value): MetaField
     {
         return LaravelMetafields::setMetaFieldValue($this, $key, $value);
     }

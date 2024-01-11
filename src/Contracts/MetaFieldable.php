@@ -3,6 +3,7 @@
 namespace FaizanSf\LaravelMetafields\Contracts;
 
 use BackedEnum;
+use FaizanSf\LaravelMetafields\Models\MetaField;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 
@@ -26,7 +27,7 @@ interface MetaFieldable
     /**
      * Set a Metafield value
      */
-    public function setMetaField(string|BackedEnum $key, $value): bool;
+    public function setMetaField(string|BackedEnum $key, $value): MetaField;
 
 
     /**

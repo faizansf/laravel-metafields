@@ -11,5 +11,9 @@ return [
 
     //'value_serializer' => \FaizanSf\LaravelMetafields\Dependencies\Serializers\JsonSerializer::class
 
-    'cache_key_prefix' => '',
+    'cache_enabled' => true,
+
+    'cache_key_prefix' => 'MetaField',
+
+    'cache_ttl' => null, //forever
 ];
