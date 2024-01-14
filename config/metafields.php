@@ -21,5 +21,5 @@ return [
     'cache_ttl' => null,
 
     // The prefix used for cache keys when storing individual meta field values.
-    'cache_key_prefix' => "LaravelMetafields",
+    'cache_key_prefix' => 'LaravelMetafields',
 ];
