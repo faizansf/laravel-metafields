@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace FaizanSf\LaravelMetafields\Concerns;
 
 use BackedEnum;
-
-use FaizanSf\LaravelMetafields\Exceptions\MetafieldNotFoundException;
 use FaizanSf\LaravelMetafields\Facades\LaravelMetafields;
 use FaizanSf\LaravelMetafields\Models\Metafield;
 use FaizanSf\LaravelMetafields\Utils\CacheContext;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
-
 
 trait HasMetafields
 {
@@ -26,19 +23,16 @@ trait HasMetafields
 
     /**
      * The model relationship.
-     *
-     * @return MorphMany
      */
     public function metaFields(): MorphMany
     {
         return $this->morphMany(Metafield::class, config('metafields.model_column_name'));
     }
 
-
     /**
      * Retrieves the row associated with the given key from the specified MetaFields model.
      *
-     * @param string|BackedEnum $key The key to retrieve the row for. Can be either a string or a BackedEnum instance.
+     * @param  string|BackedEnum  $key The key to retrieve the row for. Can be either a string or a BackedEnum instance.
      * @return Metafield|null The retrieved row.
      */
     public function getMetaFieldRow(string|BackedEnum $key): ?Metafield
@@ -56,7 +50,7 @@ trait HasMetafields
     /**
      * Retrieves the value associated with the given key attached to this model.
      *
-     * @param string|BackedEnum $key The key to retrieve the value for. Can be either a string or a BackedEnum instance.
+     * @param  string|BackedEnum  $key The key to retrieve the value for. Can be either a string or a BackedEnum instance.
      * @return mixed The retrieved value.
      */
     public function getMetaField(string|BackedEnum $key): mixed
@@ -68,6 +62,7 @@ trait HasMetafields
             LaravelMetafields::getCacheKey($this, $key),
             function () use ($key) {
                 $metaField = $this->getMetaFieldRow($key);
+
                 return $metaField->value ?? null;
             });
 
@@ -76,7 +71,7 @@ trait HasMetafields
     /**
      * Retrieves the values associated with the given keys attached to this model.
      *
-     * @param string|BackedEnum ...$keys The keys to retrieve the values for. Can be an array of
+     * @param  string|BackedEnum  ...$keys The keys to retrieve the values for. Can be an array of
      * either a string or a BackedEnum instance.
      * @return Collection The retrieved values.
      */
@@ -89,7 +84,6 @@ trait HasMetafields
 
     /**
      * Returns all the meta fields of the model
-     * @return Collection
      */
     public function getAllMetaFields(): Collection
     {
@@ -104,8 +98,8 @@ trait HasMetafields
     /**
      * Sets the value associated with the given key in the specified MetaFields model.
      *
-     * @param string|BackedEnum $key The key to set the value for. Can be either a string or a BackedEnum instance.
-     * @param mixed $value The value to be set.
+     * @param  string|BackedEnum  $key The key to set the value for. Can be either a string or a BackedEnum instance.
+     * @param  mixed  $value The value to be set.
      */
     public function setMetaField(string|BackedEnum $key, $value): Metafield
     {
@@ -120,10 +114,6 @@ trait HasMetafields
         return $metafield;
     }
 
-    /**
-     * @param string|BackedEnum $key
-     * @return bool
-     */
     public function deleteMetaField(string|BackedEnum $key): bool
     {
         $key = LaravelMetafields::normalizeKey($key);
@@ -137,7 +127,6 @@ trait HasMetafields
 
     /**
      * Deletes all meta fields of the model
-     * @return bool
      */
     public function deleteAllMetaFields(): bool
     {
@@ -152,8 +141,6 @@ trait HasMetafields
 
     /**
      * Clear cache of a single key
-     * @param string|BackedEnum $key
-     * @return void
      */
     public function clearCacheByKey(string|BackedEnum $key): void
     {
@@ -164,8 +151,6 @@ trait HasMetafields
 
     /**
      * Clear cache of multiple keys
-     * @param string|BackedEnum ...$keys
-     * @return void
      */
     public function clearCacheByKeys(string|BackedEnum ...$keys): void
     {
@@ -176,7 +161,6 @@ trait HasMetafields
 
     /**
      * Clear cache of All Metafields Collection
-     * @return void
      */
     public function clearAllMetafieldsCollectionCache(): void
     {
@@ -185,7 +169,6 @@ trait HasMetafields
 
     /**
      * Retrieves the cache context for the current model
-     * @return CacheContext
      */
     public function getCacheContext(): CacheContext
     {
