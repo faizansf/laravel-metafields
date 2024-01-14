@@ -3,14 +3,14 @@
 namespace FaizanSf\LaravelMetafields\Contracts;
 
 use BackedEnum;
-use FaizanSf\LaravelMetafields\Models\MetaField;
+use FaizanSf\LaravelMetafields\Models\Metafield;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 
 /**
- * @property-read \Illuminate\Database\Eloquent\Collection|MetaField[] $metaFields
+ * @property-read \Illuminate\Database\Eloquent\Collection|Metafield[] $metaFields
  */
-interface MetaFieldable
+interface Metafieldable
 {
     public function metaFields(): MorphMany;
     /**
@@ -27,7 +27,7 @@ interface MetaFieldable
     /**
      * Set a Metafield value
      */
-    public function setMetaField(string|BackedEnum $key, $value): MetaField;
+    public function setMetaField(string|BackedEnum $key, $value): Metafield;
 
 
     /**

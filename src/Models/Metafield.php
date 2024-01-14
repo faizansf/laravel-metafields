@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace FaizanSf\LaravelMetafields\Models;
 
-use FaizanSf\LaravelMetafields\Dependencies\Serializers\StandardSerializer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class MetaField extends Model
+class Metafield extends Model
 {
     /**
      * Mass assignable attributes
@@ -37,9 +36,8 @@ class MetaField extends Model
     {
         parent::__construct($attributes);
 
-
         $this->casts = [
-            //'value' => config('metafields.value_serializer'),
+            'value' => config('metafields.value_cast'),
         ];
 
         $this->setTable(config('metafields.table'));

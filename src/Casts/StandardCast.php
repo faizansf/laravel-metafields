@@ -2,21 +2,16 @@
 
 declare(strict_types=1);
 
-namespace FaizanSf\LaravelMetafields\Dependencies\Serializers;
+namespace FaizanSf\LaravelMetafields\Casts;
 
-use FaizanSf\LaravelMetafields\Contracts\Serializer as SerializerContract;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
-class StandardSerializer implements CastsAttributes
+class StandardCast implements CastsAttributes
 {
     public function get(Model $model, string $key, mixed $value, array $attributes)
     {
-        return json_decode($value, true);
-        //get Attribute value based on that cast
-        //Merge Cast in Model
-
         $allowedClasses = Arr::wrap(config(
             'metafields.unserialize_allowed_class', []
         ));
