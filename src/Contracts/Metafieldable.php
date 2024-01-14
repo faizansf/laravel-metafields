@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 interface Metafieldable
 {
     public function metaFields(): MorphMany;
+
     /**
      * Get a single meta field value
      */
@@ -23,17 +24,13 @@ interface Metafieldable
      */
     public function getAllMetaFields(): Collection;
 
-
     /**
      * Set a Metafield value
      */
     public function setMetaField(string|BackedEnum $key, $value): Metafield;
 
-
     /**
      * Delete Metafield by key
      */
     public function deleteMetaField(string|BackedEnum $key): bool;
-
-
 }
