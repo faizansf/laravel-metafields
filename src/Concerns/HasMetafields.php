@@ -123,7 +123,6 @@ trait HasMetafields
     /**
      * @param string|BackedEnum $key
      * @return bool
-     * @throws MetafieldNotFoundException
      */
     public function deleteMetaField(string|BackedEnum $key): bool
     {
