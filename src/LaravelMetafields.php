@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace FaizanSf\LaravelMetafields;
 
 use BackedEnum;
@@ -11,7 +10,6 @@ use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
 use FaizanSf\LaravelMetafields\Exceptions\InvalidKeyException;
 use FaizanSf\LaravelMetafields\Utils\CacheContext;
 use Illuminate\Support\Facades\Cache;
-
 
 class LaravelMetafields
 {
@@ -32,8 +30,9 @@ class LaravelMetafields
     /**
      * Normalizes the given key into a string.
      *
-     * @param string|BackedEnum $key The key to normalize. Can be either a string or a BackedEnum instance.
+     * @param  string|BackedEnum  $key The key to normalize. Can be either a string or a BackedEnum instance.
      * @return string The normalized key as a string.
+     *
      * @throws InvalidKeyException If the key is a BackedEnum instance and its value is not a string.
      */
     public function normalizeKey(string|BackedEnum $key): string
@@ -41,7 +40,7 @@ class LaravelMetafields
         if ($key instanceof BackedEnum) {
             $value = $key->value;
 
-            if (!is_string($value)) {
+            if (! is_string($value)) {
                 throw InvalidKeyException::withMessage(key: $value);
             }
 
@@ -54,24 +53,21 @@ class LaravelMetafields
     /**
      * Clears the cache for the given model and the given key.
      *
-     * @param Metafieldable $model The model for which to clear the cache.
-     * @param string $key The key for which to clear the cache.
+     * @param  Metafieldable  $model The model for which to clear the cache.
+     * @param  string  $key The key for which to clear the cache.
      */
-    public function clearCache(Metafieldable $model, string|null $key = null): void
+    public function clearCache(Metafieldable $model, ?string $key = null): void
     {
         Cache::forget($this->getCacheKey($model, $key));
     }
 
-
     /**
      * Executes the given closure and caches its result for the given time if cache is enabled.
      *
-     * @param CacheContext $cacheContext
-     * @param $cacheKey
-     * @param Closure $callback The closure to execute.
+     * @param  Closure  $callback The closure to execute.
      * @return mixed The result of the executed closure.
      */
-    public function runCachedOrDirect(CacheContext $cacheContext, $cacheKey, Closure $callback,): mixed
+    public function runCachedOrDirect(CacheContext $cacheContext, $cacheKey, Closure $callback): mixed
     {
         if ($this->canUseCache($cacheContext)) {
             return Cache::remember(
@@ -89,28 +85,22 @@ class LaravelMetafields
      * and primary key. The optional key parameter, when provided, specifies a particular metafield; otherwise,
      * it represents all metafields. Null values in model details are substituted with 'null'.
      *
-     * @param Metafieldable $model The model for which the cache key is being generated.
-     * @param string|null $key An optional key for a specific metafield. If null, the key represents all metafields.
+     * @param  Metafieldable  $model The model for which the cache key is being generated.
+     * @param  string|null  $key An optional key for a specific metafield. If null, the key represents all metafields.
      * @return string The constructed cache key.
      */
-    public function getCacheKey(Metafieldable $model, string|null $key = null): string
+    public function getCacheKey(Metafieldable $model, ?string $key = null): string
     {
         return collect([
             config('metafields.cache_key_prefix'),
             class_basename($model),
             $model->getKey() ?? 'null',
-            $key
+            $key,
         ])->filter(function ($value) {
             return $value !== null;
         })->join(':');
     }
 
-
-    /**
-     *
-     * @param Metafieldable $model
-     * @return string
-     */
     public function getAllMetaFieldsCacheKey(Metafieldable $model): string
     {
         return $this->getCacheKey($model);
@@ -118,12 +108,9 @@ class LaravelMetafields
 
     /**
      * Checks if cache is enabled and the current instance is configured to use it.
-     * @param CacheContext $cacheContext
-     * @return bool
      */
     protected function canUseCache(CacheContext $cacheContext): bool
     {
         return $cacheContext->isCacheEnabled() && $this->withCache;
     }
-
 }

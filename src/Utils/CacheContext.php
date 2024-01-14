@@ -7,13 +7,13 @@ class CacheContext
     public function __construct(
         protected bool $cacheEnabled,
         protected ?int $ttl
-    ) {}
+    ) {
+    }
 
     /**
      * Create a new CacheContext instance.
      *
-     * @param string $class The class name to create the context for.
-     * @return CacheContext
+     * @param  string  $class The class name to create the context for.
      */
     public static function make(string $class): CacheContext
     {
@@ -25,8 +25,6 @@ class CacheContext
 
     /**
      * Check if caching is enabled.
-     *
-     * @return bool
      */
     public function isCacheEnabled(): bool
     {
@@ -42,5 +40,4 @@ class CacheContext
     {
         return $this->ttl;
     }
-
 }

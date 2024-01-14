@@ -23,7 +23,6 @@ class Metafield extends Model
      */
     protected $hidden = ['model_type', 'model_id'];
 
-
     /**
      * The model relationship.
      */
@@ -42,5 +41,4 @@ class Metafield extends Model
 
         $this->setTable(config('metafields.table'));
     }
-
 }

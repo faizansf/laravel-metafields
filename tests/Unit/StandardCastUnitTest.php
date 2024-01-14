@@ -3,7 +3,6 @@
 use FaizanSf\LaravelMetafields\Casts\StandardCast;
 use FaizanSf\LaravelMetafields\Models\Metafield;
 
-
 beforeEach(function () {
     $this->cast = new StandardCast();
     $this->model = new Metafield();
@@ -44,4 +43,3 @@ it('unserialize not allowed objects into __PHP_Incomplete_Class', function () {
     expect($this->cast->get($this->model, 'value', $serialized, []))
         ->toBeInstanceOf(__PHP_Incomplete_Class::class);
 });
-

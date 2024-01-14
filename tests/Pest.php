@@ -7,8 +7,8 @@ use FaizanSf\LaravelMetafields\Tests\TestSupport\Models\Car;
 
 uses(TestCase::class)->in(__DIR__);
 
-
-function makeCarInstance(){
+function makeCarInstance()
+{
     $car = Car::newFactory()->make();
     $car->id = 1;
 

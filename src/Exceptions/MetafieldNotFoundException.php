@@ -9,8 +9,7 @@ class MetafieldNotFoundException extends Exception
     public static function withMessage(mixed $key): self
     {
         return new self(
-            'Metafield Not found having key ' . $key
+            'Metafield Not found having key '.$key
         );
     }
-
 }
