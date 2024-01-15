@@ -16,9 +16,4 @@ class LaravelMetafieldsServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasMigration('create_metafields_table');
     }
-
-    public function boot(): void
-    {
-
-    }
 }

@@ -9,7 +9,7 @@ use Closure;
 use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
 use FaizanSf\LaravelMetafields\Exceptions\InvalidKeyException;
 use FaizanSf\LaravelMetafields\Utils\CacheContext;
-use FaizanSf\LaravelMetafields\Utils\CacheHandler;
+use FaizanSf\LaravelMetafields\Facades\CacheHandler;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 
