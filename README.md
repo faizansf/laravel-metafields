@@ -5,16 +5,11 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/faizansf/laravel-metafields/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/faizansf/laravel-metafields/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/faizansf/laravel-metafields.svg?style=flat-square)](https://packagist.org/packages/faizansf/laravel-metafields)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+The Laravel Metafields package is a versatile and powerful tool designed for Laravel developers who need to extend their models with metafield functionality. This package enables you to effortlessly attach additional custom fields (metafields) to any Eloquent model in your Laravel application, providing a seamless way to enhance your models with extra data without altering your database schema.
 
-## Support us
+## Use Cases:
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-metafields.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-metafields)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
+This package is ideal for projects that require additional data storage like CMS, e-commerce platforms, and custom CRM systems. It's particularly useful in scenarios where the database schema needs to remain unchanged while still allowing for data extension.
 ## Installation
 
 You can install the package via composer:
@@ -36,25 +31,61 @@ You can publish the config file with:
 php artisan vendor:publish --tag="laravel-metafields-config"
 ```
 
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="laravel-metafields-views"
-```
-
 ## Usage
+Implements `Metafiedable` Contract in your model and use `HasMetafields` trait
 
 ```php
-$laravelMetafields = new FaizanSf\LaravelMetafields();
-echo $laravelMetafields->echoPhrase('Hello, FaizanSf!');
+namespace App\Models;
+
+use FaizanSf\LaravelMetafields\Concerns\HasMetafields;
+use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
+use Illuminate\Database\Eloquent\Model;
+
+class ExampleModel extends Model implements Metafieldable
+{
+    use HasMetafields;
+}
 ```
+
+You can set your metafields like this
+
+```php
+$exampleModel = ExampleModel::first();
+$exampleModel->setMetafield('my-custom-metafield', 'some string');    
+```
+
+You can get your metafields like this
+
+```php
+$exampleModel->getMetafield('my-custom-metafield');    
+```
+
+You can get all metafields in model instance like this
+```php
+$exampleModel->getAllMetafields();    
+```
+<br/>
+Caching is enabled by default can be disabled in your metafields configuration file
+
+Caching can also be enabled or disabled based on your model class. In your model class add the following properties and that will override the default configuration
+
+```php
+namespace App\Models;
+
+use FaizanSf\LaravelMetafields\Concerns\HasMetafields;
+use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
+use Illuminate\Database\Eloquent\Model;
+
+class ExampleModel extends Model implements Metafieldable
+{
+    use HasMetafields;
+    
+    protected static $isCacheEnabled = false;
+    protected $ttl = 600
+}
+```
+
+
 
 ## Testing
 
