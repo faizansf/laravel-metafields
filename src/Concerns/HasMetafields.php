@@ -5,19 +5,13 @@ declare(strict_types=1);
 namespace FaizanSf\LaravelMetafields\Concerns;
 
 use BackedEnum;
-
-use FaizanSf\LaravelMetafields\Exceptions\MetafieldNotFoundException;
 use FaizanSf\LaravelMetafields\Facades\CacheHandler;
-
 use FaizanSf\LaravelMetafields\Facades\LaravelMetafields;
 use FaizanSf\LaravelMetafields\Models\Metafield;
 use FaizanSf\LaravelMetafields\Utils\CacheContext;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-
 
 /**
  * Trait properties to manage caching behavior in a model.
@@ -25,13 +19,11 @@ use Illuminate\Support\Collection;
  * @property bool $cacheEnabled Optional property to be defined in your model.
  *                              When set, it overrides the default caching strategy for the model.
  *                              If true, caching is enabled; if false, caching is disabled.
- *
  * @property int $ttl Optional property to be defined in your model.
  *                    Specifies the time-to-live (TTL) for the cache in seconds.
  *                    Overrides the default cache TTL value for the model.
  *                    Only applicable if caching is enabled.
  */
-
 trait HasMetafields
 {
     public static CacheContext $cacheContext;
@@ -159,7 +151,6 @@ trait HasMetafields
 
         return true;
     }
-
 
     /**
      * Clear cache of a single key

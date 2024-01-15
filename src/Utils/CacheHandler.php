@@ -31,13 +31,11 @@ class CacheHandler
     /**
      * Clears the cache for the given model and the given key.
      *
-     * @param Metafieldable $model The model for which to clear the cache.
-     * @param string|null $key The key for which to clear the cache.
+     * @param  Metafieldable  $model The model for which to clear the cache.
+     * @param  string|null  $key The key for which to clear the cache.
      */
     public function clear(Metafieldable $model, ?string $key = null): void
     {
         Cache::forget($this->getKey($model, $key));
     }
-
-
 }
