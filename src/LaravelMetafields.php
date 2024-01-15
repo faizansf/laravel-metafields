@@ -9,28 +9,42 @@ use Closure;
 use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
 use FaizanSf\LaravelMetafields\Exceptions\InvalidKeyException;
 use FaizanSf\LaravelMetafields\Utils\CacheContext;
+use FaizanSf\LaravelMetafields\Utils\CacheHandler;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 
 class LaravelMetafields
 {
-    protected bool $withCache = true;
+    private bool $withCache = true;
+
+    private Metafieldable $model;
+
+    /**
+     *
+     * @param Metafieldable $model
+     * @return $this
+     */
+    public function setModel(Metafieldable $model): LaravelMetafields
+    {
+        $this->model = $model;
+        return $this;
+    }
 
     /**
      * Enables the cache temporarily for the current instance.
      *
-     * @return self Returns the current instance.
+     * @return LaravelMetafields Returns the current instance.
      */
-    public function withOutCache(): self
+    public function withOutCache(): LaravelMetafields
     {
         $this->withCache = false;
-
         return $this;
     }
 
     /**
      * Normalizes the given key into a string.
      *
-     * @param  string|BackedEnum  $key The key to normalize. Can be either a string or a BackedEnum instance.
+     * @param string|BackedEnum $key The key to normalize. Can be either a string or a BackedEnum instance.
      * @return string The normalized key as a string.
      *
      * @throws InvalidKeyException If the key is a BackedEnum instance and its value is not a string.
@@ -40,7 +54,7 @@ class LaravelMetafields
         if ($key instanceof BackedEnum) {
             $value = $key->value;
 
-            if (! is_string($value)) {
+            if (!$this->isValidKey($value)) {
                 throw InvalidKeyException::withMessage(key: $value);
             }
 
@@ -50,29 +64,26 @@ class LaravelMetafields
         return $key;
     }
 
-    /**
-     * Clears the cache for the given model and the given key.
-     *
-     * @param  Metafieldable  $model The model for which to clear the cache.
-     * @param  string  $key The key for which to clear the cache.
-     */
-    public function clearCache(Metafieldable $model, ?string $key = null): void
+    public function normalizeKeys(array $keys): array
     {
-        Cache::forget($this->getCacheKey($model, $key));
+        return Arr::map($keys, function ($key){
+           return $this->normalizeKey($key);
+        });
     }
 
     /**
      * Executes the given closure and caches its result for the given time if cache is enabled.
      *
-     * @param  Closure  $callback The closure to execute.
-     * @return mixed The result of the executed closure.
+     * @param Closure $callback
+     * @param string|null $key
+     * @return mixed
      */
-    public function runCachedOrDirect(CacheContext $cacheContext, $cacheKey, Closure $callback): mixed
+    public function runCachedOrDirect(Closure $callback, ?string $key = null): mixed
     {
-        if ($this->canUseCache($cacheContext)) {
+        if ($this->canUseCache($this->model->getCacheContext())) {
             return Cache::remember(
-                $cacheKey,
-                $cacheContext->getTtl(),
+                CacheHandler::getKey($this->model, $key),
+                $this->model->getCacheContext()->getTtl(),
                 $callback
             );
         }
@@ -81,36 +92,21 @@ class LaravelMetafields
     }
 
     /**
-     * Generates a cache key for a model's metafield storage, combining a configurable prefix, model's class name,
-     * and primary key. The optional key parameter, when provided, specifies a particular metafield; otherwise,
-     * it represents all metafields. Null values in model details are substituted with 'null'.
-     *
-     * @param  Metafieldable  $model The model for which the cache key is being generated.
-     * @param  string|null  $key An optional key for a specific metafield. If null, the key represents all metafields.
-     * @return string The constructed cache key.
+     * Checks if cache is enabled and the current instance is configured to use it.
      */
-    public function getCacheKey(Metafieldable $model, ?string $key = null): string
+    private function canUseCache(CacheContext $cacheContext): bool
     {
-        return collect([
-            config('metafields.cache_key_prefix'),
-            class_basename($model),
-            $model->getKey() ?? 'null',
-            $key,
-        ])->filter(function ($value) {
-            return $value !== null;
-        })->join(':');
-    }
-
-    public function getAllMetaFieldsCacheKey(Metafieldable $model): string
-    {
-        return $this->getCacheKey($model);
+        return $cacheContext->isCacheEnabled() && $this->withCache;
     }
 
     /**
-     * Checks if cache is enabled and the current instance is configured to use it.
+     * Checks if the given key is a valid key for a metafield.
+     *
+     * @param mixed $key The key to check.
+     * @return bool True if the key is valid, false otherwise.
      */
-    protected function canUseCache(CacheContext $cacheContext): bool
+    private function isValidKey(mixed $key): bool
     {
-        return $cacheContext->isCacheEnabled() && $this->withCache;
+        return is_string($key);
     }
 }

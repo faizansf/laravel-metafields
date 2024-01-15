@@ -19,9 +19,6 @@ class LaravelMetafieldsServiceProvider extends PackageServiceProvider
 
     public function boot(): void
     {
-        $this->app->bind(LaravelMetafields::class, function () {
-            return new LaravelMetafields;
-        });
 
     }
 }

@@ -7,14 +7,29 @@ namespace FaizanSf\LaravelMetafields\Concerns;
 use BackedEnum;
 
 use FaizanSf\LaravelMetafields\Exceptions\MetafieldNotFoundException;
+use FaizanSf\LaravelMetafields\Facades\CacheHandler;
 use FaizanSf\LaravelMetafields\Facades\LaravelMetafields;
 use FaizanSf\LaravelMetafields\Models\Metafield;
 use FaizanSf\LaravelMetafields\Utils\CacheContext;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 
+/**
+ * Trait properties to manage caching behavior in a model.
+ *
+ * @property bool $cacheEnabled Optional property to be defined in your model.
+ *                              When set, it overrides the default caching strategy for the model.
+ *                              If true, caching is enabled; if false, caching is disabled.
+ *
+ * @property int $ttl Optional property to be defined in your model.
+ *                    Specifies the time-to-live (TTL) for the cache in seconds.
+ *                    Overrides the default cache TTL value for the model.
+ *                    Only applicable if caching is enabled.
+ */
 trait HasMetafields
 {
     public static CacheContext $cacheContext;
@@ -22,6 +37,11 @@ trait HasMetafields
     public static function bootHasMetaFields(): void
     {
         static::$cacheContext = CacheContext::make(self::class);
+    }
+
+    public function initializeHasMetafields(): void
+    {
+        LaravelMetafields::setModel($this);
     }
 
     /**
@@ -33,7 +53,6 @@ trait HasMetafields
     {
         return $this->morphMany(Metafield::class, config('metafields.model_column_name'));
     }
-
 
     /**
      * Retrieves the row associated with the given key from the specified MetaFields model.
@@ -64,12 +83,10 @@ trait HasMetafields
         $key = LaravelMetafields::normalizeKey($key);
 
         return LaravelMetafields::runCachedOrDirect(
-            $this->getCacheContext(),
-            LaravelMetafields::getCacheKey($this, $key),
             function () use ($key) {
                 $metaField = $this->getMetaFieldRow($key);
                 return $metaField->value ?? null;
-            });
+            }, $key);
 
     }
 
@@ -94,8 +111,6 @@ trait HasMetafields
     public function getAllMetaFields(): Collection
     {
         return LaravelMetafields::runCachedOrDirect(
-            $this->getCacheContext(),
-            LaravelMetafields::getAllMetaFieldsCacheKey($this),
             function () {
                 return $this->metaFields->pluck('value', 'key');
             });
@@ -150,6 +165,7 @@ trait HasMetafields
         return true;
     }
 
+
     /**
      * Clear cache of a single key
      * @param string|BackedEnum $key
@@ -159,7 +175,7 @@ trait HasMetafields
     {
         $key = LaravelMetafields::normalizeKey($key);
 
-        LaravelMetafields::clearCache($this, $key);
+        CacheHandler::clear($this, $key);
     }
 
     /**
@@ -167,7 +183,7 @@ trait HasMetafields
      * @param string|BackedEnum ...$keys
      * @return void
      */
-    public function clearCacheByKeys(string|BackedEnum ...$keys): void
+    public function clearCacheByKeys(array $keys): void
     {
         foreach ($keys as $key) {
             $this->clearCacheByKey($key);
@@ -180,7 +196,7 @@ trait HasMetafields
      */
     public function clearAllMetafieldsCollectionCache(): void
     {
-        LaravelMetafields::clearCache($this);
+        CacheHandler::clear($this);
     }
 
     /**
@@ -190,10 +206,5 @@ trait HasMetafields
     public function getCacheContext(): CacheContext
     {
         return self::$cacheContext;
-    }
-
-    public function setCacheContext(CacheContext $context): void
-    {
-        self::$cacheContext = $context;
     }
 }

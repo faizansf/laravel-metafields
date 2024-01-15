@@ -1,6 +1,7 @@
 <?php
 
 use FaizanSf\LaravelMetafields\Exceptions\InvalidKeyException;
+use FaizanSf\LaravelMetafields\Facades\CacheHandler;
 use FaizanSf\LaravelMetafields\Facades\LaravelMetafields;
 
 it('normalizes enum key', function ($testKey) {
@@ -28,7 +29,7 @@ it('returns single field cache key in correct format', function ($key) {
 
     config()->set('metafields.cache_key_prefix', $prefix);
 
-    $cacheKey = LaravelMetafields::getCacheKey($car, $key);
+    $cacheKey = CacheHandler::getKey($car, $key);
     $expected = $prefix.':Car:'.$car->getKey().':'.$key;
 
     expect($cacheKey)->toBeString()->toEqual($expected);
@@ -39,7 +40,7 @@ it('returns all metafields cache key in correct format', function () {
     config()->set('metafields.cache_key_prefix', $prefix);
     $car = makeCarInstance();
 
-    $cacheKey = LaravelMetafields::getAllMetaFieldsCacheKey($car);
+    $cacheKey = CacheHandler::getKey($car);
     $expected = $prefix.':Car:'.$car->getKey();
 
     expect($cacheKey)->toBeString()->toEqual($expected);
@@ -49,15 +50,15 @@ it('returns all metafields cache key in correct format', function () {
 it('caches the result when enabled, then clears the cache', function () {
     $car = makeCarInstance();
     $key = 'model';
-    $cacheKey = LaravelMetafields::getCacheKey($car, $key);
+    $cacheKey = CacheHandler::getKey($car, $key);
 
-    LaravelMetafields::runCachedOrDirect($car->getCacheContext(), $cacheKey, function () {
+    LaravelMetafields::setModel($car)->runCachedOrDirect(function () {
         return 1999;
-    });
+    }, $key);
 
     expect(cache()->has($cacheKey))->toBeTrue();
 
-    LaravelMetafields::clearCache($car, $key);
+    CacheHandler::clear($car, $key);
 
     expect(cache()->has($cacheKey))->toBeFalse();
 
@@ -68,11 +69,10 @@ it('doesnt caches the result when cache is disabled', function () {
 
     $car = makeCarInstance();
     $key = 'model';
-    $cacheKey = LaravelMetafields::getCacheKey($car, $key);
-
-    LaravelMetafields::runCachedOrDirect($car->getCacheContext(), $cacheKey, function () {
+    $cacheKey = CacheHandler::getKey($car, $key);
+    LaravelMetafields::setModel($car)->runCachedOrDirect(function () {
         return 1999;
-    });
+    }, $key);
 
     expect(cache()->has($cacheKey))->toBeFalse();
 });
