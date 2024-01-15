@@ -20,13 +20,12 @@ class LaravelMetafields
     private Metafieldable $model;
 
     /**
-     *
-     * @param Metafieldable $model
      * @return $this
      */
     public function setModel(Metafieldable $model): LaravelMetafields
     {
         $this->model = $model;
+
         return $this;
     }
 
@@ -38,13 +37,14 @@ class LaravelMetafields
     public function withOutCache(): LaravelMetafields
     {
         $this->withCache = false;
+
         return $this;
     }
 
     /**
      * Normalizes the given key into a string.
      *
-     * @param string|BackedEnum $key The key to normalize. Can be either a string or a BackedEnum instance.
+     * @param  string|BackedEnum  $key The key to normalize. Can be either a string or a BackedEnum instance.
      * @return string The normalized key as a string.
      *
      * @throws InvalidKeyException If the key is a BackedEnum instance and its value is not a string.
@@ -54,7 +54,7 @@ class LaravelMetafields
         if ($key instanceof BackedEnum) {
             $value = $key->value;
 
-            if (!$this->isValidKey($value)) {
+            if (! $this->isValidKey($value)) {
                 throw InvalidKeyException::withMessage(key: $value);
             }
 
@@ -66,17 +66,13 @@ class LaravelMetafields
 
     public function normalizeKeys(array $keys): array
     {
-        return Arr::map($keys, function ($key){
-           return $this->normalizeKey($key);
+        return Arr::map($keys, function ($key) {
+            return $this->normalizeKey($key);
         });
     }
 
     /**
      * Executes the given closure and caches its result for the given time if cache is enabled.
-     *
-     * @param Closure $callback
-     * @param string|null $key
-     * @return mixed
      */
     public function runCachedOrDirect(Closure $callback, ?string $key = null): mixed
     {
@@ -102,7 +98,7 @@ class LaravelMetafields
     /**
      * Checks if the given key is a valid key for a metafield.
      *
-     * @param mixed $key The key to check.
+     * @param  mixed  $key The key to check.
      * @return bool True if the key is valid, false otherwise.
      */
     private function isValidKey(mixed $key): bool
