@@ -6,7 +6,9 @@ namespace FaizanSf\LaravelMetafields\Concerns;
 
 use BackedEnum;
 use Closure;
+
 use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
+
 use FaizanSf\LaravelMetafields\Facades\MetaCacheHelperFacade;
 use FaizanSf\LaravelMetafields\Facades\MetaKeyHelperFacade;
 use FaizanSf\LaravelMetafields\Models\Metafield;
@@ -191,26 +193,16 @@ trait HasMetafields
         MetaCacheHelperFacade::clear($this);
     }
 
-    /**
-     * @return bool
-     */
     public function getMetafieldCacheEnabled(): bool
     {
         return $this->metafieldCacheEnabled ?? config('metafields.cache_metafields');
     }
 
-    /**
-     * @param bool $metafieldCacheEnabled
-     * @return void
-     */
     public function setMetafieldCacheEnabled(bool $metafieldCacheEnabled): void
     {
         $this->metafieldCacheEnabled = $metafieldCacheEnabled;
     }
 
-    /**
-     * @return int
-     */
     public function getTtl(): int
     {
         return $this->ttl ?? config('metafields.cache_ttl');

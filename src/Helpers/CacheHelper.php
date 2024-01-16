@@ -36,7 +36,7 @@ class CacheHelper
      * @param  Metafieldable  $model The model for which to clear the cache.
      * @param  string|null  $key The key for which to clear the cache.
      */
-    public function clear(Metafieldable $model, string|BackedEnum $key = null): void
+    public function clear(Metafieldable $model, string|BackedEnum|null $key = null): void
     {
         $key = MetaKeyHelperFacade::normalizeKey($key);
 

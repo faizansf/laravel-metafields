@@ -33,7 +33,8 @@ class MetaKeyHelper
 
     /**
      * Normalizes the given keys into a string and returns the normalized key array
-     * @param array<int, string|BackedEnum> $keys
+     *
+     * @param  array<int, string|BackedEnum>  $keys
      * @return array<int, string> The normalized
      */
     public function normalizeKeys(array $keys): array
@@ -53,6 +54,4 @@ class MetaKeyHelper
     {
         return is_string($key);
     }
-
-
 }

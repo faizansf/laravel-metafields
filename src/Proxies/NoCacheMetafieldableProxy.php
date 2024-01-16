@@ -14,17 +14,17 @@ use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
  */
 class NoCacheMetafieldableProxy
 {
-
     /**
      * Creates a new NoCacheMetafieldableProxy instance.
      *
-     * @param Metafieldable $parent The Metafieldable instance to proxy.
-     * @param bool $originalCacheSetting The original cache setting of the Metafieldable instance.
+     * @param  Metafieldable  $parent The Metafieldable instance to proxy.
+     * @param  bool  $originalCacheSetting The original cache setting of the Metafieldable instance.
      */
     public function __construct(
         private readonly Metafieldable $parent,
         private readonly bool $originalCacheSetting)
-    {}
+    {
+    }
 
     /**
      * Magic method to handle method calls to the proxied Metafieldable instance.
@@ -32,13 +32,15 @@ class NoCacheMetafieldableProxy
      * It intercepts method calls, executes them on the Metafieldable instance without
      * caching, and then restores the original cache settings.
      *
-     * @param string $name The name of the method being called.
-     * @param array $arguments The arguments passed to the method.
+     * @param  string  $name The name of the method being called.
+     * @param  array  $arguments The arguments passed to the method.
      * @return mixed The result of the method call.
      */
-    public function __call(string $name, ...$arguments) {
+    public function __call(string $name, ...$arguments)
+    {
         $result = $this->parent->$name(...$arguments);
         $this->parent->setMetafieldCacheEnabled($this->originalCacheSetting);
+
         return $result;
     }
 }
