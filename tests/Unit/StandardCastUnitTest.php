@@ -1,7 +1,7 @@
 <?php
 
-use FaizanSf\LaravelMetafields\ValueSerializers\StandardValueSerializer;
 use FaizanSf\LaravelMetafields\Models\Metafield;
+use FaizanSf\LaravelMetafields\ValueSerializers\StandardValueSerializer;
 
 beforeEach(function () {
     $this->cast = new StandardValueSerializer();

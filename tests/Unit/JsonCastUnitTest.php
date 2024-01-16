@@ -1,7 +1,7 @@
 <?php
 
-use FaizanSf\LaravelMetafields\ValueSerializers\JsonValueSerializer;
 use FaizanSf\LaravelMetafields\Tests\TestSupport\Models\Car;
+use FaizanSf\LaravelMetafields\ValueSerializers\JsonValueSerializer;
 
 beforeEach(function () {
     $this->cast = new JsonValueSerializer();

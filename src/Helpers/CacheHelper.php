@@ -14,8 +14,8 @@ class CacheHelper
      * and primary key. The optional key parameter, when provided, specifies a particular metafield; otherwise,
      * it represents all metafields. Null values in model details are substituted with 'null'.
      *
-     * @param  Metafieldable  $model The model for which the cache key is being generated.
-     * @param  string|null  $key An optional key for a specific metafield. If null, the key represents all metafields.
+     * @param  Metafieldable  $model  The model for which the cache key is being generated.
+     * @param  string|null  $key  An optional key for a specific metafield. If null, the key represents all metafields.
      * @return string The constructed cache key.
      */
     public function getKey(Metafieldable $model, ?string $key = null): string
@@ -33,8 +33,8 @@ class CacheHelper
     /**
      * Clears the cache for the given model and the given key.
      *
-     * @param  Metafieldable  $model The model for which to clear the cache.
-     * @param  string|null  $key The key for which to clear the cache.
+     * @param  Metafieldable  $model  The model for which to clear the cache.
+     * @param  string|null  $key  The key for which to clear the cache.
      */
     public function clear(Metafieldable $model, string|BackedEnum|null $key = null): void
     {
