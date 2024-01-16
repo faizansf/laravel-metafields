@@ -5,18 +5,21 @@ declare(strict_types=1);
 namespace FaizanSf\LaravelMetafields\Concerns;
 
 use BackedEnum;
-use FaizanSf\LaravelMetafields\Facades\CacheHandler;
-use FaizanSf\LaravelMetafields\Facades\LaravelMetafields;
+use Closure;
+use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
+use FaizanSf\LaravelMetafields\Facades\MetaCacheHelperFacade;
+use FaizanSf\LaravelMetafields\Facades\MetaKeyHelperFacade;
 use FaizanSf\LaravelMetafields\Models\Metafield;
-use FaizanSf\LaravelMetafields\Utils\CacheContext;
+use FaizanSf\LaravelMetafields\Proxies\NoCacheMetafieldableProxy;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Trait properties to manage caching behavior in a model.
  *
- * @property bool $cacheEnabled Optional property to be defined in your model.
+ * @property bool $metafieldCacheEnabled Optional property to be defined in your model.
  *                              When set, it overrides the default caching strategy for the model.
  *                              If true, caching is enabled; if false, caching is disabled.
  * @property int $ttl Optional property to be defined in your model.
@@ -26,17 +29,9 @@ use Illuminate\Support\Collection;
  */
 trait HasMetafields
 {
-    public static CacheContext $cacheContext;
+    private ?bool $metafieldCacheEnabled = null;
+    private ?int  $ttl = null;
 
-    public static function bootHasMetaFields(): void
-    {
-        static::$cacheContext = CacheContext::make(self::class);
-    }
-
-    public function initializeHasMetafields(): void
-    {
-        LaravelMetafields::setModel($this);
-    }
 
     /**
      * The model relationship.
@@ -47,6 +42,26 @@ trait HasMetafields
     }
 
     /**
+     * Creates a new instance of NoCacheMetafieldableProxy to handle metafield operations without caching.
+     *
+     * This method temporarily disables the caching of metafields for the current object.
+     * It achieves this by creating a NoCacheMetafieldableProxy instance, which ensures
+     * that all subsequent metafield operations are performed without caching. The original
+     * caching setting is preserved and restored after the proxy operation is complete.
+     *
+     * @return NoCacheMetafieldableProxy Returns a new instance of NoCacheMetafieldableProxy
+     *                                   with caching disabled for metafield operations.
+     */
+    public function withoutCache(): NoCacheMetafieldableProxy
+    {
+        $originalCacheSetting = $this->getMetafieldCacheEnabled();
+
+        $this->metafieldCacheEnabled = false;
+
+        return new NoCacheMetafieldableProxy($this, $originalCacheSetting);
+    }
+
+    /**
      * Retrieves the row associated with the given key from the specified MetaFields model.
      *
      * @param  string|BackedEnum  $key The key to retrieve the row for. Can be either a string or a BackedEnum instance.
@@ -54,7 +69,7 @@ trait HasMetafields
      */
     public function getMetaFieldRow(string|BackedEnum $key): ?Metafield
     {
-        $key = LaravelMetafields::normalizeKey($key);
+        $key = MetaKeyHelperFacade::normalizeKey($key);
 
         try {
             return $this->metaFields->where('key', $key)->firstOrFail();
@@ -72,9 +87,9 @@ trait HasMetafields
      */
     public function getMetaField(string|BackedEnum $key): mixed
     {
-        $key = LaravelMetafields::normalizeKey($key);
+        $key = MetaKeyHelperFacade::normalizeKey($key);
 
-        return LaravelMetafields::runCachedOrDirect(
+        return $this->runCachedOrDirect(
             function () use ($key) {
                 $metaField = $this->getMetaFieldRow($key);
 
@@ -102,7 +117,7 @@ trait HasMetafields
      */
     public function getAllMetaFields(): Collection
     {
-        return LaravelMetafields::runCachedOrDirect(
+        return $this->runCachedOrDirect(
             function () {
                 return $this->metaFields->pluck('value', 'key');
             });
@@ -116,7 +131,7 @@ trait HasMetafields
      */
     public function setMetaField(string|BackedEnum $key, $value): Metafield
     {
-        $key = LaravelMetafields::normalizeKey($key);
+        $key = MetaKeyHelperFacade::normalizeKey($key);
 
         $metafield = $this->metaFields()->updateOrCreate(['key' => $key], ['value' => $value]);
 
@@ -129,7 +144,7 @@ trait HasMetafields
 
     public function deleteMetaField(string|BackedEnum $key): bool
     {
-        $key = LaravelMetafields::normalizeKey($key);
+        $key = MetaKeyHelperFacade::normalizeKey($key);
 
         $this->getMetaFieldRow($key)?->delete();
 
@@ -157,9 +172,7 @@ trait HasMetafields
      */
     public function clearCacheByKey(string|BackedEnum $key): void
     {
-        $key = LaravelMetafields::normalizeKey($key);
-
-        CacheHandler::clear($this, $key);
+        MetaCacheHelperFacade::clear($this, $key);
     }
 
     /**
@@ -177,14 +190,55 @@ trait HasMetafields
      */
     public function clearAllMetafieldsCollectionCache(): void
     {
-        CacheHandler::clear($this);
+        MetaCacheHelperFacade::clear($this);
     }
 
     /**
-     * Retrieves the cache context for the current model
+     * @return bool
      */
-    public function getCacheContext(): CacheContext
+    public function getMetafieldCacheEnabled(): bool
     {
-        return self::$cacheContext;
+        return $this->metafieldCacheEnabled ?? config('metafields.cache_metafields');
+    }
+
+    /**
+     * @param bool $metafieldCacheEnabled
+     * @return void
+     */
+    public function setMetafieldCacheEnabled(bool $metafieldCacheEnabled): void
+    {
+        $this->metafieldCacheEnabled = $metafieldCacheEnabled;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTtl(): int
+    {
+        return $this->ttl ?? config('metafields.cache_ttl');
+    }
+
+    /**
+     * Executes the given closure and caches its result for the given time if cache is enabled.
+     */
+    private function runCachedOrDirect(Closure $callback, ?string $key = null): mixed
+    {
+        if ($this->canUseCache()) {
+            return Cache::remember(
+                MetaCacheHelperFacade::getKey($this, $key),
+                $this->getTtl(),
+                $callback
+            );
+        }
+
+        return $callback();
+    }
+
+    /**
+     * Checks if cache is enabled and the current instance is configured to use it.
+     */
+    private function canUseCache(): bool
+    {
+        return $this->getMetafieldCacheEnabled();
     }
 }

@@ -76,7 +76,7 @@
                 "FaizanSf\\LaravelMetafields\\LaravelMetafieldsServiceProvider"
             ],
             "aliases": {
-                "LaravelMetafields": "FaizanSf\\LaravelMetafields\\Facades\\LaravelMetafields"
+                "LaravelMetafields": "MetaKeyHelper"
             }
         }
     },

@@ -6,13 +6,14 @@ namespace FaizanSf\LaravelMetafields\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+
 /**
- * @see \FaizanSf\LaravelMetafields\CacheHandler
+ * @see \FaizanSf\LaravelMetafields\Helpers\CacheHelper
  */
-class CacheHandler extends Facade
+class MetaCacheHelperFacade extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \FaizanSf\LaravelMetafields\Utils\CacheHandler::class;
+        return \FaizanSf\LaravelMetafields\Helpers\CacheHelper::class;
     }
 }

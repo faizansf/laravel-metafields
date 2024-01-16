@@ -7,12 +7,12 @@ namespace FaizanSf\LaravelMetafields\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \FaizanSf\LaravelMetafields\LaravelMetafields
+ * @see \FaizanSf\LaravelMetafields\Helpers\MetaKeyHelper
  */
-class LaravelMetafields extends Facade
+class MetaKeyHelperFacade extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \FaizanSf\LaravelMetafields\LaravelMetafields::class;
+        return \FaizanSf\LaravelMetafields\Helpers\MetaKeyHelper::class;
     }
 }

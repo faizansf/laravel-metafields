@@ -65,7 +65,8 @@ You can get all metafields in model instance like this
 $exampleModel->getAllMetafields();    
 ```
 <br/>
-Caching is enabled by default can be disabled in your metafields configuration file
+Caching is enabled by default can be disabled in your metafields configuration file.
+<br/>
 
 Caching can also be enabled or disabled based on your model class. In your model class add the following properties and that will override the default configuration
 
@@ -80,12 +81,16 @@ class ExampleModel extends Model implements Metafieldable
 {
     use HasMetafields;
     
-    protected static $isCacheEnabled = false;
+    protected $cacheMetaFields = false;
     protected $ttl = 600
 }
 ```
 
+You can also directly retrieve a non-cached version by using `withOutcache()` method. The method employs the proxy pattern to facilitate the easy bypassing of caching with a single call.
 
+```php
+$exampleModel->withoutCache()->getAllMetafields();   
+```
 
 ## Testing
 

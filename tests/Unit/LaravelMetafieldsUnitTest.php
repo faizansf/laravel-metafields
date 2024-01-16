@@ -1,35 +1,35 @@
 <?php
 
 use FaizanSf\LaravelMetafields\Exceptions\InvalidKeyException;
-use FaizanSf\LaravelMetafields\Facades\CacheHandler;
-use FaizanSf\LaravelMetafields\Facades\LaravelMetafields;
+use FaizanSf\LaravelMetafields\Facades\MetaCacheHelperFacade;
+use FaizanSf\LaravelMetafields\Facades\MetaKeyHelperFacade;
 
 it('normalizes enum key', function ($testKey) {
     $key = $testKey;
-    $normalizedKey = LaravelMetafields::normalizeKey($key);
+    $normalizedKey = MetaKeyHelperFacade::normalizeKey($key);
 
     expect($normalizedKey)->toBeString()->toEqual($key->value);
 })->with('testKeys');
 
 it('throws exception where enum key is not a string', function ($invalidTestKey) {
-    LaravelMetafields::normalizeKey($invalidTestKey);
+    MetaKeyHelperFacade::normalizeKey($invalidTestKey);
 })->throws(InvalidKeyException::class)->with('invalidTestKeys');
 
 it('does not normalize string key', function ($stringKey) {
     $key = $stringKey;
-    $normalizedKey = LaravelMetafields::normalizeKey($key);
+    $normalizedKey = MetaKeyHelperFacade::normalizeKey($key);
 
     expect($normalizedKey)->toBeString()->toEqual($key);
 })->with('stringKeys');
 
 it('returns single field cache key in correct format', function ($key) {
-    $key = LaravelMetafields::normalizeKey($key);
+    $key = MetaKeyHelperFacade::normalizeKey($key);
     $car = makeCarInstance();
     $prefix = 'LaravelMetafields';
 
     config()->set('metafields.cache_key_prefix', $prefix);
 
-    $cacheKey = CacheHandler::getKey($car, $key);
+    $cacheKey = MetaCacheHelperFacade::getKey($car, $key);
     $expected = $prefix.':Car:'.$car->getKey().':'.$key;
 
     expect($cacheKey)->toBeString()->toEqual($expected);
@@ -40,7 +40,7 @@ it('returns all metafields cache key in correct format', function () {
     config()->set('metafields.cache_key_prefix', $prefix);
     $car = makeCarInstance();
 
-    $cacheKey = CacheHandler::getKey($car);
+    $cacheKey = MetaCacheHelperFacade::getKey($car);
     $expected = $prefix.':Car:'.$car->getKey();
 
     expect($cacheKey)->toBeString()->toEqual($expected);
@@ -50,15 +50,15 @@ it('returns all metafields cache key in correct format', function () {
 it('caches the result when enabled, then clears the cache', function () {
     $car = makeCarInstance();
     $key = 'model';
-    $cacheKey = CacheHandler::getKey($car, $key);
+    $cacheKey = MetaCacheHelperFacade::getKey($car, $key);
 
-    LaravelMetafields::setModel($car)->runCachedOrDirect(function () {
+    MetaKeyHelperFacade::setModel($car)->runCachedOrDirect(function () {
         return 1999;
     }, $key);
 
     expect(cache()->has($cacheKey))->toBeTrue();
 
-    CacheHandler::clear($car, $key);
+    MetaCacheHelperFacade::clear($car, $key);
 
     expect(cache()->has($cacheKey))->toBeFalse();
 
@@ -69,8 +69,8 @@ it('doesnt caches the result when cache is disabled', function () {
 
     $car = makeCarInstance();
     $key = 'model';
-    $cacheKey = CacheHandler::getKey($car, $key);
-    LaravelMetafields::setModel($car)->runCachedOrDirect(function () {
+    $cacheKey = MetaCacheHelperFacade::getKey($car, $key);
+    MetaKeyHelperFacade::setModel($car)->runCachedOrDirect(function () {
         return 1999;
     }, $key);
 

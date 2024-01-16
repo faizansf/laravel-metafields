@@ -1,11 +1,13 @@
 <?php
 
-namespace FaizanSf\LaravelMetafields\Utils;
+namespace FaizanSf\LaravelMetafields\Helpers;
 
+use BackedEnum;
 use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
+use FaizanSf\LaravelMetafields\Facades\MetaKeyHelperFacade;
 use Illuminate\Support\Facades\Cache;
 
-class CacheHandler
+class CacheHelper
 {
     /**
      * Generates a cache key for a model's metafield storage, combining a configurable prefix, model's class name,
@@ -34,8 +36,10 @@ class CacheHandler
      * @param  Metafieldable  $model The model for which to clear the cache.
      * @param  string|null  $key The key for which to clear the cache.
      */
-    public function clear(Metafieldable $model, ?string $key = null): void
+    public function clear(Metafieldable $model, string|BackedEnum $key = null): void
     {
+        $key = MetaKeyHelperFacade::normalizeKey($key);
+
         Cache::forget($this->getKey($model, $key));
     }
 }

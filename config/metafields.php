@@ -15,7 +15,7 @@ return [
     'value_cast' => \FaizanSf\LaravelMetafields\Casts\StandardCast::class,
 
     // Flag to enable or disable caching of meta fields.
-    'cache_enabled' => true,
+    'cache_metafields' => true,
 
     // Time-to-live for cached meta fields. Null indicates caching forever.
     'cache_ttl' => null,
