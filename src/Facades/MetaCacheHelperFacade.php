@@ -6,7 +6,6 @@ namespace FaizanSf\LaravelMetafields\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-
 /**
  * @see \FaizanSf\LaravelMetafields\Helpers\CacheHelper
  */
