@@ -12,7 +12,7 @@ return [
     'unserialize_allowed_class' => [],
 
     // The class responsible for serializing the values stored in meta fields.
-    'value_cast' => \FaizanSf\LaravelMetafields\Casts\StandardCast::class,
+    'value_cast' => \FaizanSf\LaravelMetafields\ValueSerializers\StandardValueSerializer::class,
 
     // Flag to enable or disable caching of meta fields.
     'cache_metafields' => true,

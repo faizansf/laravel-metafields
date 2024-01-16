@@ -6,7 +6,7 @@ namespace FaizanSf\LaravelMetafields\Concerns;
 
 use BackedEnum;
 use Closure;
-use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
+use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
 use FaizanSf\LaravelMetafields\Facades\MetaCacheHelperFacade;
 use FaizanSf\LaravelMetafields\Facades\MetaKeyHelperFacade;
 use FaizanSf\LaravelMetafields\Models\Metafield;
@@ -14,6 +14,7 @@ use FaizanSf\LaravelMetafields\Proxies\NoCacheMetafieldableProxy;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -30,7 +31,7 @@ use Illuminate\Support\Facades\Cache;
 trait HasMetafields
 {
     private ?bool $metafieldCacheEnabled = null;
-    private ?int  $ttl = null;
+    private ?int $ttl = null;
 
 
     /**
@@ -42,15 +43,12 @@ trait HasMetafields
     }
 
     /**
-     * Creates a new instance of NoCacheMetafieldableProxy to handle metafield operations without caching.
+     * Disables caching for metafield operations.
      *
-     * This method temporarily disables the caching of metafields for the current object.
-     * It achieves this by creating a NoCacheMetafieldableProxy instance, which ensures
-     * that all subsequent metafield operations are performed without caching. The original
-     * caching setting is preserved and restored after the proxy operation is complete.
+     * Temporarily switches off caching for the current object by using a NoCacheMetafieldableProxy.
+     * The original cache setting is restored after operations via this proxy are completed.
      *
-     * @return NoCacheMetafieldableProxy Returns a new instance of NoCacheMetafieldableProxy
-     *                                   with caching disabled for metafield operations.
+     * @return NoCacheMetafieldableProxy Proxy instance for non-cached metafield operations.
      */
     public function withoutCache(): NoCacheMetafieldableProxy
     {
@@ -64,7 +62,7 @@ trait HasMetafields
     /**
      * Retrieves the row associated with the given key from the specified MetaFields model.
      *
-     * @param  string|BackedEnum  $key The key to retrieve the row for. Can be either a string or a BackedEnum instance.
+     * @param string|BackedEnum $key The key to retrieve the row for. Can be either a string or a BackedEnum instance.
      * @return Metafield|null The retrieved row.
      */
     public function getMetaFieldRow(string|BackedEnum $key): ?Metafield
@@ -82,26 +80,25 @@ trait HasMetafields
     /**
      * Retrieves the value associated with the given key attached to this model.
      *
-     * @param  string|BackedEnum  $key The key to retrieve the value for. Can be either a string or a BackedEnum instance.
+     * @param string|BackedEnum $key The key to retrieve the value for. Can be either a string or a BackedEnum instance.
      * @return mixed The retrieved value.
      */
     public function getMetaField(string|BackedEnum $key): mixed
     {
         $key = MetaKeyHelperFacade::normalizeKey($key);
 
-        return $this->runCachedOrDirect(
-            function () use ($key) {
-                $metaField = $this->getMetaFieldRow($key);
+        $serializer = $this->resolveSerializer($key);
 
-                return $metaField->value ?? null;
-            }, $key);
+        return $this->runCachedOrDirect(fn() => ($metaField = $this->getMetaFieldRow($key)) && isset($metaField->value)
+            ? $this->unserialize($metaField->value, $serializer)
+            : null, $key);
 
     }
 
     /**
      * Retrieves the values associated with the given keys attached to this model.
      *
-     * @param  string|BackedEnum  ...$keys The keys to retrieve the values for. Can be an array of
+     * @param string|BackedEnum ...$keys The keys to retrieve the values for. Can be an array of
      * either a string or a BackedEnum instance.
      * @return Collection The retrieved values.
      */
@@ -120,14 +117,15 @@ trait HasMetafields
         return $this->runCachedOrDirect(
             function () {
                 return $this->metaFields->pluck('value', 'key');
-            });
+            }
+        );
     }
 
     /**
      * Sets the value associated with the given key in the specified MetaFields model.
      *
-     * @param  string|BackedEnum  $key The key to set the value for. Can be either a string or a BackedEnum instance.
-     * @param  mixed  $value The value to be set.
+     * @param string|BackedEnum $key The key to set the value for. Can be either a string or a BackedEnum instance.
+     * @param mixed $value The value to be set.
      */
     public function setMetaField(string|BackedEnum $key, $value): Metafield
     {
@@ -223,15 +221,9 @@ trait HasMetafields
      */
     private function runCachedOrDirect(Closure $callback, ?string $key = null): mixed
     {
-        if ($this->canUseCache()) {
-            return Cache::remember(
-                MetaCacheHelperFacade::getKey($this, $key),
-                $this->getTtl(),
-                $callback
-            );
-        }
-
-        return $callback();
+        return $this->canUseCache()
+            ? Cache::remember(MetaCacheHelperFacade::getKey($this, $key), $this->getTtl(), $callback)
+            : $callback();
     }
 
     /**
@@ -240,5 +232,49 @@ trait HasMetafields
     private function canUseCache(): bool
     {
         return $this->getMetafieldCacheEnabled();
+    }
+
+    /**
+     * Resolves the appropriate serializer for a given key.
+     *
+     * @param string|BackedEnum $key The key for which to resolve the serializer.
+     * @return ValueSerializer|null Returns an instance of the resolved serializer or default serializer.
+     */
+    private function resolveSerializer(string|BackedEnum $key): ?ValueSerializer
+    {
+        $key = MetaKeyHelperFacade::normalizeKey($key);
+
+        return !empty($this->metafieldsSerializers[$key])
+            ? new $this->metafieldsSerializers[$key]
+            : App::make(ValueSerializer::class);
+    }
+
+    /**
+     * Unserializes the given serialized data using the specified serializer.
+     *
+     * @param string $serialized The serialized data to unserialize.
+     * @param ValueSerializer|null $serializer The serializer to use for unserialization.
+     * @return mixed Returns unserialized data.
+     */
+    private function unserialize(string $serialized, ?ValueSerializer $serializer): mixed
+    {
+        return is_null($serializer)
+            ? $serialized
+            : $serializer->unserialize($serialized);
+
+    }
+
+    /**
+     * Serializes the given value using the specified serializer.
+     *
+     * @param mixed $value The value to serialize.
+     * @param ValueSerializer|null $serializer The serializer to use for serialization.
+     * @return string Returns serialized data.
+     */
+    private function serialize(mixed $value, ?ValueSerializer $serializer): string
+    {
+        return is_null($serializer)
+            ? $value
+            : $serializer->serialize($value);
     }
 }

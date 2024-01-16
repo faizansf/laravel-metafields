@@ -1,10 +1,10 @@
 <?php
 
-use FaizanSf\LaravelMetafields\Casts\JsonCast;
+use FaizanSf\LaravelMetafields\ValueSerializers\JsonValueSerializer;
 use FaizanSf\LaravelMetafields\Tests\TestSupport\Models\Car;
 
 beforeEach(function () {
-    $this->cast = new JsonCast();
+    $this->cast = new JsonValueSerializer();
     $this->model = new Car();
 });
 

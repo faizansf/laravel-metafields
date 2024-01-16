@@ -1,12 +1,12 @@
 <?php
 
-namespace FaizanSf\LaravelMetafields\Casts;
+namespace FaizanSf\LaravelMetafields\ValueSerializers;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use JsonException;
 
-class JsonCast implements CastsAttributes
+class JsonValueSerializer implements CastsAttributes
 {
     /**
      * @throws JsonException
