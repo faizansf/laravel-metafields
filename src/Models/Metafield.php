@@ -45,5 +45,4 @@ class Metafield extends Model
 
         $this->setTable(config('metafields.table'));
     }
-
 }
