@@ -8,7 +8,6 @@ use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
 
 class PlainSerializer implements ValueSerializer
 {
-
     public function unserialize($serialized): mixed
     {
         return $serialized;
