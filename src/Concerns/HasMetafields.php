@@ -6,9 +6,7 @@ namespace FaizanSf\LaravelMetafields\Concerns;
 
 use BackedEnum;
 use Closure;
-
 use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
-
 use FaizanSf\LaravelMetafields\Facades\MetaCacheHelperFacade;
 use FaizanSf\LaravelMetafields\Facades\MetaKeyHelperFacade;
 use FaizanSf\LaravelMetafields\Models\Metafield;
@@ -19,21 +17,28 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 
-/**
- * Trait properties to manage caching behavior in a model.
- *
- * @property bool $metafieldCacheEnabled Optional property to be defined in your model.
- *                              When set, it overrides the default caching strategy for the model.
- *                              If true, caching is enabled; if false, caching is disabled.
- * @property int $ttl Optional property to be defined in your model.
- *                    Specifies the time-to-live (TTL) for the cache in seconds.
- *                    Overrides the default cache TTL value for the model.
- *                    Only applicable if caching is enabled.
- */
 trait HasMetafields
 {
-    private ?bool $metafieldCacheEnabled = null;
+    /**
+     * Optional property to be defined in your model. When set, it overrides the default caching strategy for the model.
+     * If true, caching is enabled; if false, caching is disabled.
+     * @var bool|null $shouldCacheMetafields
+     */
+    private ?bool $shouldCacheMetafields = null;
+
+    /**
+     * Optional property to be defined in your model. Specifies the time-to-live (TTL) for the cache in seconds.
+     * Overrides the default cache TTL value for the model.
+     * Only applicable if caching is enabled.
+     * @var int|null
+     */
     private ?int $ttl = null;
+
+    /**
+     * Overrides the default serialization behaviour of Metafield
+     * @var array <string|BackedEnum, ValueSerializer>
+     */
+    protected array $metafieldsSerializers = [];
 
 
     /**
@@ -54,9 +59,9 @@ trait HasMetafields
      */
     public function withoutCache(): NoCacheMetafieldableProxy
     {
-        $originalCacheSetting = $this->getMetafieldCacheEnabled();
+        $originalCacheSetting = $this->shouldCacheMetafields();
 
-        $this->metafieldCacheEnabled = false;
+        $this->shouldCacheMetafields = false;
 
         return new NoCacheMetafieldableProxy($this, $originalCacheSetting);
     }
@@ -106,6 +111,7 @@ trait HasMetafields
      */
     public function getMetaFields(string|BackedEnum ...$keys): Collection
     {
+        //TODO: Implement Query Builder instance of calling getMetaField in loop
         return collect($keys)->map(function ($key) {
             return $this->getMetaField($key);
         });
@@ -116,11 +122,11 @@ trait HasMetafields
      */
     public function getAllMetaFields(): Collection
     {
-        return $this->runCachedOrDirect(
-            function () {
-                return $this->metaFields->pluck('value', 'key');
-            }
-        );
+        return $this->runCachedOrDirect(fn() => $this->metaFields->mapWithKeys(function (Metafield $metafield) {
+            $key = $metafield->key;
+            $value = $this->unserialize($metafield->value, $this->resolveSerializer($key));
+            return [$metafield->key => $value];
+        }));
     }
 
     /**
@@ -133,7 +139,9 @@ trait HasMetafields
     {
         $key = MetaKeyHelperFacade::normalizeKey($key);
 
-        $metafield = $this->metaFields()->updateOrCreate(['key' => $key], ['value' => $value]);
+        $serializer = $this->resolveSerializer($key);
+
+        $metafield = $this->metaFields()->updateOrCreate(['key' => $key], ['value' => $this->serialize($value, $serializer)]);
 
         $this->clearCacheByKey($key);
 
@@ -193,14 +201,27 @@ trait HasMetafields
         MetaCacheHelperFacade::clear($this);
     }
 
-    public function getMetafieldCacheEnabled(): bool
+    public function shouldCacheMetafields(): bool
     {
-        return $this->metafieldCacheEnabled ?? config('metafields.cache_metafields');
+        return $this->shouldCacheMetafields ?? config('metafields.cache_metafields');
     }
 
-    public function setMetafieldCacheEnabled(bool $metafieldCacheEnabled): void
+    /**
+     * Set Cache Status
+     * @param bool $shouldCacheMetafields
+     * @return void
+     */
+    public function setMetafieldCacheStatus(bool $shouldCacheMetafields): void
     {
-        $this->metafieldCacheEnabled = $metafieldCacheEnabled;
+        $this->shouldCacheMetafields = $shouldCacheMetafields;
+    }
+
+    /**
+     * Checks if cache is enabled and the current instance is configured to use it.
+     */
+    private function canUseCache(): bool
+    {
+        return $this->shouldCacheMetafields();
     }
 
     public function getTtl(): int
@@ -216,14 +237,6 @@ trait HasMetafields
         return $this->canUseCache()
             ? Cache::remember(MetaCacheHelperFacade::getKey($this, $key), $this->getTtl(), $callback)
             : $callback();
-    }
-
-    /**
-     * Checks if cache is enabled and the current instance is configured to use it.
-     */
-    private function canUseCache(): bool
-    {
-        return $this->getMetafieldCacheEnabled();
     }
 
     /**

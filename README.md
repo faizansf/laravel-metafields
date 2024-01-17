@@ -71,8 +71,6 @@ Caching is enabled by default can be disabled in your metafields configuration f
 Caching can also be enabled or disabled based on your model class. In your model class add the following properties and that will override the default configuration
 
 ```php
-namespace App\Models;
-
 use FaizanSf\LaravelMetafields\Concerns\HasMetafields;
 use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
 use Illuminate\Database\Eloquent\Model;
@@ -86,11 +84,59 @@ class ExampleModel extends Model implements Metafieldable
 }
 ```
 
-You can also directly retrieve a non-cached version by using `withOutcache()` method. The method employs the proxy pattern to facilitate the easy bypassing of caching with a single call.
+You can retrieve a non-cached version of the data by using the `withoutCache()` method. This method provides a 
+straightforward way to bypass caching for a single call, ensuring you get the most up-to-date data.
+```php
+$exampleModel->withoutCache()->getAllMetafield('some-key');   
+```
+
+### Serialization
+
+The package includes `StandardValueSerializer` and `JsonValueSerializer` classes. You have the option to choose a 
+default serializer for all fields in the `metafields` config file. Additionally, you can define 
+a `$metafieldsSerializers` array inside your model to override the default serialization behavior. 
+Any custom serializer class you add must implement the `FaizanSf\LaravelMetafields\Contracts\ValueSerializer` interface.
 
 ```php
-$exampleModel->withoutCache()->getAllMetafields();   
+namespace App\ValueSerializers;
+
+use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
+use Illuminate\Support\Arr;
+
+class CustomSerializer implements ValueSerializer
+{
+    public function unserialize($serialized): mixed
+    {
+        //Do some custom login
+    }
+
+    public function serialize($value): string
+    {
+        //Do some custom login
+    }
+}
 ```
+And then
+
+```php
+use FaizanSf\LaravelMetafields\Concerns\HasMetafields;
+use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
+use Illuminate\Database\Eloquent\Model;
+use App\Serializers\CustomSerializer;
+use App\Enums\ExampleMetafieldsEnum;
+
+class ExampleModel extends Model implements Metafieldable
+{
+    use HasMetafields;
+    
+    protected array $metafieldsSerializers  = [
+         'some-key' => CustomSerializer::class,
+         ExampleMetafieldsEnum::ExampleField => CustomSerializer::class
+    ];
+}
+```
+
+
 
 ## Testing
 

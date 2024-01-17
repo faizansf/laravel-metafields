@@ -7,6 +7,10 @@ namespace FaizanSf\LaravelMetafields\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * @property $key
+ * @property $value
+ */
 class Metafield extends Model
 {
     /**
@@ -41,4 +45,5 @@ class Metafield extends Model
 
         $this->setTable(config('metafields.table'));
     }
+
 }

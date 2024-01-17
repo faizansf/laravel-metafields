@@ -39,7 +39,7 @@ class NoCacheMetafieldableProxy
     public function __call(string $name, ...$arguments)
     {
         $result = $this->parent->$name(...$arguments);
-        $this->parent->setMetafieldCacheEnabled($this->originalCacheSetting);
+        $this->parent->setMetafieldCacheStatus($this->originalCacheSetting);
 
         return $result;
     }
