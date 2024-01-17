@@ -11,7 +11,7 @@ class MetaKeyHelper
     /**
      * Normalizes the given key into a string.
      *
-     * @param  string|BackedEnum  $key The key to normalize. Can be either a string or a BackedEnum instance.
+     * @param  string|BackedEnum  $key  The key to normalize. Can be either a string or a BackedEnum instance.
      * @return string The normalized key as a string.
      *
      * @throws InvalidKeyException If the key is a BackedEnum instance and its value is not a string.
@@ -47,7 +47,7 @@ class MetaKeyHelper
     /**
      * Checks if the given key is a valid key for a metafield.
      *
-     * @param  mixed  $key The key to check.
+     * @param  mixed  $key  The key to check.
      * @return bool True if the key is valid, false otherwise.
      */
     private function isValidKey(mixed $key): bool

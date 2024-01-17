@@ -106,7 +106,7 @@ trait HasMetafields
      * Retrieves the values associated with the given keys attached to this model.
      *
      * @param string|BackedEnum ...$keys The keys to retrieve the values for. Can be an array of
-     * either a string or a BackedEnum instance.
+     *                                      either a string or a BackedEnum instance.
      * @return Collection The retrieved values.
      */
     public function getMetaFields(string|BackedEnum ...$keys): Collection
