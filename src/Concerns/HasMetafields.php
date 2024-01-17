@@ -67,7 +67,7 @@ trait HasMetafields
     /**
      * Retrieves the row associated with the given key from the specified MetaFields model.
      *
-     * @param string|BackedEnum $key The key to retrieve the row for. Can be either a string or a BackedEnum instance.
+     * @param  string|BackedEnum  $key  The key to retrieve the row for. Can be either a string or a BackedEnum instance.
      * @return Metafield|null The retrieved row.
      */
     public function getMetaFieldRow(string|BackedEnum $key): ?Metafield
@@ -85,7 +85,7 @@ trait HasMetafields
     /**
      * Retrieves the value associated with the given key attached to this model.
      *
-     * @param string|BackedEnum $key The key to retrieve the value for. Can be either a string or a BackedEnum instance.
+     * @param  string|BackedEnum  $key  The key to retrieve the value for. Can be either a string or a BackedEnum instance.
      * @return mixed The retrieved value.
      */
     public function getMetaField(string|BackedEnum $key): mixed
@@ -94,7 +94,7 @@ trait HasMetafields
 
         $serializer = $this->resolveSerializer($key);
 
-        return $this->runCachedOrDirect(fn() => ($metaField = $this->getMetaFieldRow($key)) && isset($metaField->value)
+        return $this->runCachedOrDirect(fn () => ($metaField = $this->getMetaFieldRow($key)) && isset($metaField->value)
             ? $this->unserialize($metaField->value, $serializer)
             : null, $key);
 
@@ -103,7 +103,7 @@ trait HasMetafields
     /**
      * Retrieves the values associated with the given keys attached to this model.
      *
-     * @param string|BackedEnum ...$keys The keys to retrieve the values for. Can be an array of
+     * @param  string|BackedEnum  ...$keys  The keys to retrieve the values for. Can be an array of
      *                                      either a string or a BackedEnum instance.
      * @return Collection The retrieved values.
      */
@@ -120,7 +120,7 @@ trait HasMetafields
      */
     public function getAllMetaFields(): Collection
     {
-        return $this->runCachedOrDirect(fn() => $this->metaFields->mapWithKeys(function (Metafield $metafield) {
+        return $this->runCachedOrDirect(fn () => $this->metaFields->mapWithKeys(function (Metafield $metafield) {
             $key = $metafield->key;
             $value = $this->unserialize($metafield->value, $this->resolveSerializer($key));
 
@@ -131,8 +131,8 @@ trait HasMetafields
     /**
      * Sets the value associated with the given key in the specified MetaFields model.
      *
-     * @param string|BackedEnum $key The key to set the value for. Can be either a string or a BackedEnum instance.
-     * @param mixed $value The value to be set.
+     * @param  string|BackedEnum  $key  The key to set the value for. Can be either a string or a BackedEnum instance.
+     * @param  mixed  $value  The value to be set.
      */
     public function setMetaField(string|BackedEnum $key, $value): Metafield
     {
@@ -239,7 +239,7 @@ trait HasMetafields
     /**
      * Resolves the appropriate serializer for a given key.
      *
-     * @param string|BackedEnum $key The key for which to resolve the serializer.
+     * @param  string|BackedEnum  $key  The key for which to resolve the serializer.
      * @return ValueSerializer|null Returns an instance of the resolved serializer or default serializer.
      */
     private function resolveSerializer(string|BackedEnum $key): ?ValueSerializer
@@ -254,8 +254,8 @@ trait HasMetafields
     /**
      * Unserializes the given serialized data using the specified serializer.
      *
-     * @param string $serialized The serialized data to unserialize.
-     * @param ValueSerializer|null $serializer The serializer to use for unserialization.
+     * @param  string  $serialized  The serialized data to unserialize.
+     * @param  ValueSerializer|null  $serializer  The serializer to use for unserialization.
      * @return mixed Returns unserialized data.
      */
     private function unserialize(string $serialized, ?ValueSerializer $serializer): mixed
@@ -268,8 +268,8 @@ trait HasMetafields
     /**
      * Serializes the given value using the specified serializer.
      *
-     * @param mixed $value The value to serialize.
-     * @param ValueSerializer|null $serializer The serializer to use for serialization.
+     * @param  mixed  $value  The value to serialize.
+     * @param  ValueSerializer|null  $serializer  The serializer to use for serialization.
      * @return string Returns serialized data.
      */
     private function serialize(mixed $value, ?ValueSerializer $serializer): string
