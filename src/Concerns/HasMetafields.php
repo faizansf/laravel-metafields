@@ -246,7 +246,7 @@ trait HasMetafields
     {
         $key = MetaKeyHelperFacade::normalizeKey($key);
 
-        return !empty($this->metafieldSerializers[$key])
+        return ! empty($this->metafieldSerializers[$key])
             ? new $this->metafieldSerializers[$key]
             : App::make(ValueSerializer::class);
     }
