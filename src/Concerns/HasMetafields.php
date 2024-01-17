@@ -38,7 +38,7 @@ trait HasMetafields
      * Overrides the default serialization behaviour of Metafield
      * @var array <string|BackedEnum, ValueSerializer>
      */
-    protected array $metafieldsSerializers = [];
+    protected array $metafieldSerializers = [];
 
 
     /**
@@ -249,8 +249,8 @@ trait HasMetafields
     {
         $key = MetaKeyHelperFacade::normalizeKey($key);
 
-        return !empty($this->metafieldsSerializers[$key])
-            ? new $this->metafieldsSerializers[$key]
+        return !empty($this->metafieldSerializers[$key])
+            ? new $this->metafieldSerializers[$key]
             : App::make(ValueSerializer::class);
     }
 
