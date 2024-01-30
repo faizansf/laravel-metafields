@@ -1,20 +1,22 @@
 <?php
 
-namespace FaizanSf\LaravelMetafields\Support\Abstract;
+declare(strict_types=1);
+
+namespace FaizanSf\LaravelMetafields\Support\Helpers\Abstract;
 
 use BackedEnum;
 use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
 use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
+use FaizanSf\LaravelMetafields\DataTransferObjects\NormalizedKey;
 use FaizanSf\LaravelMetafields\Exceptions\InvalidKeyException;
 use FaizanSf\LaravelMetafields\Exceptions\InvalidValueSerializerException;
 use FaizanSf\LaravelMetafields\Exceptions\ModelNotSetException;
-
 use Illuminate\Support\Facades\App;
 
 abstract class SerializeValueHelper
 {
-    public function __construct(protected NormalizeMetaKeyHelper $keyNormalizer)
-    {}
+    protected array $serializerInstances = [];
+
     /**
      * Checks if the provided class name is a valid serializer.
      * @param string $serializerClass
@@ -34,23 +36,31 @@ abstract class SerializeValueHelper
     /**
      * Resolves the appropriate serializer for a given key.
      *
-     * @param string|BackedEnum $key The key for which to resolve the serializer.
-     * @return ValueSerializer|null Returns an instance of the resolved serializer or default serializer.
+     * @param Metafieldable $model
+     * @param NormalizedKey $key The key for which to resolve the serializer.
+     * @return ValueSerializer Returns an instance of the resolved serializer or default serializer.
      * @throws InvalidValueSerializerException
-     * @throws ModelNotSetException
-     * @throws InvalidKeyException
      */
-    public function resolve(Metafieldable $model, string|BackedEnum $key): ValueSerializer
+    public function resolve(Metafieldable $model, NormalizedKey $key): ValueSerializer
     {
-        $key = $this->keyNormalizer->normalize($key);
-
         $serializerClass = $model->getValueSerializer($key) ?? ValueSerializer::class;
 
+        return $this->make($serializerClass);
+    }
+
+    /**
+     * Makes the Serializer instance
+     * @param string $serializerClass
+     * @return ValueSerializer
+     * @throws InvalidValueSerializerException
+     */
+    public function make(string $serializerClass): ValueSerializer
+    {
         if (!$this->isValidSerializer($serializerClass)) {
             throw InvalidValueSerializerException::withMessage($serializerClass);
         }
 
-        return App::make($serializerClass);
+        return $this->serializerInstances[$serializerClass] ??= App::make($serializerClass);
     }
 
 }

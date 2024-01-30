@@ -1,6 +1,6 @@
 <?php
 
-namespace FaizanSf\LaravelMetafields\Tests\TestSupport\Enums;
+namespace Workbench\App\Enums;
 
 enum CarMetafieldsEnum: string
 {

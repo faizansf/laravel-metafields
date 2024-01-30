@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace FaizanSf\LaravelMetafields\ValueSerializers;
+namespace FaizanSf\LaravelMetafields\Support\ValueSerializers;
 
 use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
 use Illuminate\Support\Arr;
 
-class StandardValueSerializer implements ValueSerializer
+final class StandardValueSerializer implements ValueSerializer
 {
     public function unserialize($serialized): mixed
     {

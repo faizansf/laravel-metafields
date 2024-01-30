@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FaizanSf\LaravelMetafields\Contracts;
 
-class DataTransferObject
+interface DataTransferObject
 {
-
+    public function asString(): string;
 }

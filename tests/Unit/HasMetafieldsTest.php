@@ -1,7 +1,9 @@
 <?php
 
+use FaizanSf\LaravelMetafields\Exceptions\DuplicateKeyException;
 use FaizanSf\LaravelMetafields\Support\Helpers\NormalizeMetaKeyHelper;
 use FaizanSf\LaravelMetafields\Support\ValueSerializers\DirectValueSerializer;
+use FaizanSf\LaravelMetafields\Support\ValueSerializers\JsonValueSerializer;
 use FaizanSf\LaravelMetafields\Support\ValueSerializers\StandardValueSerializer;
 
 beforeEach(function(){
@@ -60,4 +62,9 @@ it('can register serializers for metafields', function () {
     expect($serializer1)->toBe(DirectValueSerializer::class)
         //Since no serializer is registered for test-key-2, it should return null
         ->and($serializer2)->toBeNull();
-    });
+});
+
+it('throws an exception when trying to map a duplicate key to a different serializer', function(){
+    $this->model->mapSerializer('test-key', StandardValueSerializer::class);
+    $this->model->mapSerializer('test-key', JsonValueSerializer::class);
+})->throws(DuplicateKeyException::class);

@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Workbench\App\Models\PersonDirectValue;
 
 /**
- * @template TModel of \Workbench\App\Models\PersonDirectValue
+ * @template TModel of PersonDirectValue
  *
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<TModel>
+ * @extends Factory<TModel>
  */
 class PersonDirectValueFactory extends Factory
 {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FaizanSf\LaravelMetafields\Contracts;
 
 use BackedEnum;
@@ -8,29 +10,29 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 
 /**
- * @property-read \Illuminate\Database\Eloquent\Collection|Metafield[] $metaFields
+ * @property-read \Illuminate\Database\Eloquent\Collection|Metafield[] $metafields
  */
 interface Metafieldable
 {
-    public function metaFields(): MorphMany;
+    public function metafields(): MorphMany;
 
     /**
      * Get a single meta field value
      */
-    public function getMetaField(string|BackedEnum $key): mixed;
+    public function getMetafield(string|BackedEnum $key): mixed;
 
     /**
      * Get All Meta fields of a model in key=>value pair
      */
-    public function getAllMetaFields(): Collection;
+    public function getAllMetafields(): Collection;
 
     /**
      * Set a Metafield value
      */
-    public function setMetaField(string|BackedEnum $key, $value): Metafield;
+    public function setMetafield(string|BackedEnum $key, $value): string;
 
     /**
      * Delete Metafield by key
      */
-    public function deleteMetaField(string|BackedEnum $key): bool;
+    public function deleteMetafield(string|BackedEnum $key): bool;
 }

@@ -1,8 +1,10 @@
 <?php
 
-namespace FaizanSf\LaravelMetafields\Support;
+declare(strict_types=1);
 
-use FaizanSf\LaravelMetafields\Support\Abstract\NormalizeMetaKeyHelper as BaseMetaKeyNormalizer;
+namespace FaizanSf\LaravelMetafields\Support\Helpers;
+
+use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\NormalizeMetaKeyHelper as BaseMetaKeyNormalizer;
 
 class NormalizeMetaKeyHelper extends BaseMetaKeyNormalizer
 {

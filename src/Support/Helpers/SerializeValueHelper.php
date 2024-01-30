@@ -1,8 +1,10 @@
 <?php
 
-namespace FaizanSf\LaravelMetafields\Support;
+declare(strict_types=1);
 
-use FaizanSf\LaravelMetafields\Support\Abstract\SerializeValueHelper as BaseMetaValueSerializer;
+namespace FaizanSf\LaravelMetafields\Support\Helpers;
+
+use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\SerializeValueHelper as BaseMetaValueSerializer;
 
 class SerializeValueHelper extends BaseMetaValueSerializer
 {

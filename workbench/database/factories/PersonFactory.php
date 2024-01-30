@@ -1,14 +1,14 @@
 <?php
 
-namespace Workbench\Database\Factories\Models;
+namespace Workbench\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Workbench\App\Models\Person;
 
 /**
- * @template TModel of \Workbench\App\Models\Person
+ * @template TModel of Person
  *
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<TModel>
+ * @extends Factory<TModel>
  */
 class PersonFactory extends Factory
 {

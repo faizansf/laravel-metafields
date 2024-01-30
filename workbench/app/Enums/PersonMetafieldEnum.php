@@ -2,7 +2,8 @@
 
 namespace Workbench\App\Enums;
 
-enum TestEnum
+enum PersonMetafieldEnum: string
 {
-
+    case EMAIL = 'email';
+    case PHONE = 'phone';
 }

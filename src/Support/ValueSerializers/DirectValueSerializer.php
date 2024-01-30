@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace FaizanSf\LaravelMetafields\ValueSerializers;
+namespace FaizanSf\LaravelMetafields\Support\ValueSerializers;
 
 use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
 
-class DirectValueSerializer implements ValueSerializer
+final class DirectValueSerializer implements ValueSerializer
 {
     public function unserialize($serialized): mixed
     {
         return $serialized;
     }
 
-    public function serialize($value): string
+    public function serialize($value): mixed
     {
         return $value;
     }

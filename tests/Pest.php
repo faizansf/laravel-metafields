@@ -1,18 +1,27 @@
 <?php
 
 use FaizanSf\LaravelMetafields\Tests\TestCase;
-use FaizanSf\LaravelMetafields\Tests\TestSupport\Enums\CarMetafieldsEnum;
-use FaizanSf\LaravelMetafields\Tests\TestSupport\Enums\CarMetafieldsNonStringEnum;
-use FaizanSf\LaravelMetafields\Tests\TestSupport\Models\Car;
+use Workbench\App\Enums\CarMetafieldsEnum;
+use Workbench\App\Enums\CarMetafieldsNonStringEnum;
+use Workbench\App\Models\Person;
+use Workbench\App\Models\PersonDirectValue;
+
 
 uses(TestCase::class)->in(__DIR__);
 
-function makeCarInstance()
+function makePersonInstance()
 {
-    $car = Car::newFactory()->make();
-    $car->id = 1;
+    $person = Person::factory()->make();
+    $person->id = 1;
 
-    return $car;
+    return $person;
+}
+
+function makePersonDirectValueInstance()
+{
+    $personDirectValue = PersonDirectValue::factory()->make();
+    $personDirectValue->id = 1;
+    return $personDirectValue;
 }
 
 dataset('testKeys', [

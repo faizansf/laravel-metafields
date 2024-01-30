@@ -1,8 +1,16 @@
 <?php
 
-namespace FaizanSf\LaravelMetafields\Support\Helpers\Abstract;
+declare(strict_types=1);
 
-class InvalidConfigurationException
+namespace FaizanSf\LaravelMetafields\Exceptions;
+
+use Exception;
+
+class InvalidConfigurationException extends Exception
 {
+    public static function withMessage($message): self
+    {
+        return new self($message);
+    }
 
 }

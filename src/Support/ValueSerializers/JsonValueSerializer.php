@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace FaizanSf\LaravelMetafields\ValueSerializers;
+namespace FaizanSf\LaravelMetafields\Support\ValueSerializers;
 
 use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
 use JsonException;
 
-class JsonValueSerializer implements ValueSerializer
+final class JsonValueSerializer implements ValueSerializer
 {
     /**
      * @throws JsonException

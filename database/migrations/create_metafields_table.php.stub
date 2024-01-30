@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('key');
             $table->text('value');
-            $table->morphs(config('metafields.model_column'));
+            $table->morphs(config('metafields.model_column_name'));
             $table->timestamps();
         });
     }

@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FaizanSf\LaravelMetafields\Exceptions;
 
 use Exception;
+use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
 
-class InvalidKeyException extends Exception
+class InvalidValueSerializerException extends Exception
 {
-    public static function withMessage(mixed $key): self
+    public static function withMessage(string|null $serializerClass): self
     {
         return new self(
-            'Expected key to be string or string backed Enum Got'.gettype($key)
+            'Provided serializer must implements '. ValueSerializer::class .'. got ' . $serializerClass . ' instead'
         );
     }
 }
