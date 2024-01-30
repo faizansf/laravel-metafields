@@ -81,7 +81,7 @@ Integrate the `Metafiedable` contract and the `HasMetafields` trait into your mo
 use FaizanSf\LaravelMetafields\Concerns\HasMetafields;
 use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
 
-class ExampleModel extends Model implements Metafieldable
+class Person extends Model implements Metafieldable
 {
     use HasMetafields;
      
