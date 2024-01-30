@@ -1,10 +1,13 @@
 {
     "name": "faizansf/laravel-metafields",
-    "description": "This is my package laravel-metafields",
+    "description": "This package enhances Laravel Models by introducing Meta field functionality.",
     "keywords": [
         "Faizan Shakil Faruqi",
         "laravel",
-        "laravel-metafields"
+        "laravel-metafields",
+        "metafields",
+        "metafield",
+        "custom fields"
     ],
     "homepage": "https://github.com/faizansf/laravel-metafields",
     "license": "MIT",
