@@ -7,8 +7,8 @@ namespace FaizanSf\LaravelMetafields\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property $key
- * @property $value
+ * @property string $key
+ * @property mixed $value
  */
 class Metafield extends Model
 {

@@ -28,8 +28,8 @@ class LaravelMetafieldsServiceProvider extends PackageServiceProvider
         $this->app->singleton(BaseNormalizeMetaKeyHelper::class, Support\Helpers\NormalizeMetaKeyHelper::class);
         $this->app->singleton(BaseSerializeValueHelper::class, Support\Helpers\SerializeValueHelper::class);
 
-        $this->app->singleton(ValueSerializer::class, function () {
-            return $this->app->make(BaseSerializeValueHelper::class)
+        $this->app->singleton(ValueSerializer::class, function ($app) {
+            return $app->make(BaseSerializeValueHelper::class)
                 ->make(config('metafields.default_serializer', StandardValueSerializer::class));
         });
 
