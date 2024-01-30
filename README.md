@@ -28,7 +28,7 @@ composer require faizansf/laravel-metafields
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --tag="laravel-metafields-migrations"
+php artisan vendor:publish --tag="metafields-migrations"
 php artisan migrate
 ```
 >**Note:**<br/>
@@ -37,7 +37,7 @@ php artisan migrate
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --tag="laravel-metafields-config"
+php artisan vendor:publish --tag="metafields-config"
 ```
 
 ## Configuration
