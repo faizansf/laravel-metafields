@@ -1,8 +1,10 @@
-# Laravel Metafields
+<h1 align="center">Laravel Metafields</h1>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/faizansf/laravel-metafields.svg?style=flat-square)](https://packagist.org/packages/faizansf/laravel-metafields)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/faizansf/laravel-metafields/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/faizansf/laravel-metafields/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/faizansf/laravel-metafields/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/faizansf/laravel-metafields/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+<p align="center">
+    <a href="https://packagist.org/packages/faizansf/laravel-metafields"><img src="https://img.shields.io/packagist/v/faizansf/laravel-metafields.svg?style=flat-square" alt="Latest Version on Packagist"></a>
+    <a href="https://github.com/faizansf/laravel-metafields/actions?query=workflow%3Arun-tests+branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/faizansf/laravel-metafields/run-tests.yml?branch=main&label=tests&style=flat-square" alt="GitHub Tests Action Status"></a>
+    <a href="https://github.com/faizansf/laravel-metafields/actions?query=workflow%3A%22Fix+PHP+code+style+issues%22+branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/faizansf/laravel-metafields/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square" alt="GitHub Code Style Action Status"></a>
+</p>
 
 The Laravel Metafields package is a versatile and powerful tool designed for Laravel developers who need to extend their
 models with metafield functionality.
