@@ -210,7 +210,7 @@ class Person extends Model implements Metafieldable
 {
     use HasMetafields;
     
-    protected static function registerSerializers(){
+    protected function registerSerializers(){
         $this
             ->mapSerializer('some-key', CustomSerializer::class)
             ->mapSerializer(PersonMetafieldsEnum::Name, CustomSerializer::class)
