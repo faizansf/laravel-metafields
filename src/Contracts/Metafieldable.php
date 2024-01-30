@@ -47,7 +47,7 @@ interface Metafieldable
     /**
      * Get models TTL
      */
-    public function getTtl(): int;
+    public function getTtl(): ?int;
 
     /**
      * Get Serializer for the given field in the model
