@@ -12,5 +12,4 @@ class InvalidConfigurationException extends Exception
     {
         return new self($message);
     }
-
 }

@@ -20,5 +20,5 @@ it('returns same value on serialize', function ($value) {
 
 dataset('data', [
     ['abc'],
-    [[1, 2, 3]]
+    [[1, 2, 3]],
 ]);

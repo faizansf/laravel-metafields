@@ -6,7 +6,6 @@ use Workbench\App\Enums\CarMetafieldsNonStringEnum;
 use Workbench\App\Models\Person;
 use Workbench\App\Models\PersonDirectValue;
 
-
 uses(TestCase::class)->in(__DIR__);
 
 function makePersonInstance()
@@ -21,6 +20,7 @@ function makePersonDirectValueInstance()
 {
     $personDirectValue = PersonDirectValue::factory()->make();
     $personDirectValue->id = 1;
+
     return $personDirectValue;
 }
 

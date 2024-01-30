@@ -16,7 +16,6 @@ use FaizanSf\LaravelMetafields\Proxies\WithoutCacheLaravelMetafieldsProxy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
-use Symfony\Component\Yaml\Exception\DumpException;
 
 /**
  * @method static registerSerializers()
@@ -38,13 +37,11 @@ trait HasMetafields
 
     /**
      * Optional property to be defined in your model. Specifies the serializer for the metafield
-     * @var array
      */
     protected array $metafieldSerializers = [];
 
     /**
      * Core Metafield Service
-     * @var LaravelMetafields|null
      */
     protected ?LaravelMetafields $metafieldsService = null;
 
@@ -55,26 +52,17 @@ trait HasMetafields
         }
     }
 
-    /**
-     * @return MorphMany
-     */
     public function metafields(): MorphMany
     {
         return $this->morphMany(Metafield::class, config('metafields.model_column_name'));
     }
 
-    /**
-     * @return WithoutCacheLaravelMetafieldsProxy
-     */
     public function withoutCache(): WithoutCacheLaravelMetafieldsProxy
     {
         return $this->getMetafieldsService()->withoutCache();
     }
 
     /**
-     * @param string|BackedEnum $key
-     * @param $default
-     * @return mixed
      * @throws InvalidKeyException
      * @throws ModelNotSetException
      * @throws InvalidValueSerializerException
@@ -85,7 +73,6 @@ trait HasMetafields
     }
 
     /**
-     * @return Collection
      * @throws InvalidKeyException
      * @throws InvalidValueSerializerException
      * @throws ModelNotSetException
@@ -96,9 +83,6 @@ trait HasMetafields
     }
 
     /**
-     * @param string|BackedEnum $key
-     * @param $value
-     * @return string
      * @throws InvalidKeyException
      * @throws InvalidValueSerializerException
      * @throws ModelNotSetException
@@ -110,8 +94,6 @@ trait HasMetafields
     }
 
     /**
-     * @param string|BackedEnum $key
-     * @return bool
      * @throws InvalidKeyException
      * @throws ModelNotSetException
      */
@@ -121,7 +103,6 @@ trait HasMetafields
     }
 
     /**
-     * @return int
      * @throws ModelNotSetException
      */
     public function deleteAllMetafields(): int
@@ -129,18 +110,12 @@ trait HasMetafields
         return $this->getMetafieldsService()->deleteAll();
     }
 
-    /**
-     * @return bool
-     */
     public function shouldCacheMetafields(): bool
     {
         return $this->shouldCacheMetafields ?? config('metafields.cache_metafields');
     }
 
     /**
-     * @param string|BackedEnum $key
-     * @param string $value
-     * @return void
      * @throws DuplicateKeyException
      * @throws InvalidKeyException
      * @throws InvalidValueSerializerException
@@ -151,7 +126,7 @@ trait HasMetafields
         /** @var NormalizedKey $normalizedKey */
         [$normalizedKey, $serializer] = $this->getMetafieldsService()->getNormalizedKeyWithValidSerializer($key, $value);
 
-        $normalizedKey  = $normalizedKey->asString();
+        $normalizedKey = $normalizedKey->asString();
 
         if (array_key_exists($normalizedKey, $this->metafieldSerializers)) {
             throw DuplicateKeyException::withMessage($normalizedKey, $serializer);
@@ -162,28 +137,24 @@ trait HasMetafields
 
     /**
      * Returns the TTL for the cache in seconds.
-     * @return int|null
      */
     public function getTtl(): ?int
     {
         return $this->ttl ?? config('metafields.cache_ttl');
     }
 
-    /**
-     * @param NormalizedKey $key
-     * @return mixed
-     */
     public function getValueSerializer(NormalizedKey $key): mixed
     {
         return $this->metafieldSerializers[$key->asString()] ?? null;
     }
 
-    protected function getMetafieldsService(): LaravelMetafields {
+    protected function getMetafieldsService(): LaravelMetafields
+    {
         if ($this->metafieldsService === null) {
             $this->metafieldsService = app(LaravelMetafields::class);
             $this->metafieldsService->setModel($this);
         }
+
         return $this->metafieldsService;
     }
-
 }

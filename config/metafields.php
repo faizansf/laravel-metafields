@@ -29,5 +29,5 @@ return [
     'not_allowed_keys' => [],
 
     //Cache key for all metafields collection
-    'all_metafields_cache_key' => 'all-metafields'
+    'all_metafields_cache_key' => 'all-metafields',
 ];

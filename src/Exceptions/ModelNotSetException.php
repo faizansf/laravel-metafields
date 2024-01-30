@@ -12,5 +12,4 @@ class ModelNotSetException extends \Exception
             'Model is not set. Specify a model using setModel() method'
         );
     }
-
 }

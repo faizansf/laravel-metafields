@@ -9,10 +9,10 @@ use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
 
 class InvalidValueSerializerException extends Exception
 {
-    public static function withMessage(string|null $serializerClass): self
+    public static function withMessage(?string $serializerClass): self
     {
         return new self(
-            'Provided serializer must implements '. ValueSerializer::class .'. got ' . $serializerClass . ' instead'
+            'Provided serializer must implements '.ValueSerializer::class.'. got '.$serializerClass.' instead'
         );
     }
 }

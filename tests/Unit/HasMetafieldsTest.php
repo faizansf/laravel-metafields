@@ -6,11 +6,10 @@ use FaizanSf\LaravelMetafields\Support\ValueSerializers\DirectValueSerializer;
 use FaizanSf\LaravelMetafields\Support\ValueSerializers\JsonValueSerializer;
 use FaizanSf\LaravelMetafields\Support\ValueSerializers\StandardValueSerializer;
 
-beforeEach(function(){
+beforeEach(function () {
     $this->model = makePersonInstance();
     $this->keyNormalizer = new NormalizeMetaKeyHelper;
 });
-
 
 it('can set and get a metafield value', function () {
     $this->model->setMetafield('foo', 'bar');
@@ -64,7 +63,7 @@ it('can register serializers for metafields', function () {
         ->and($serializer2)->toBeNull();
 });
 
-it('throws an exception when trying to map a duplicate key to a different serializer', function(){
+it('throws an exception when trying to map a duplicate key to a different serializer', function () {
     $this->model->mapSerializer('test-key', StandardValueSerializer::class);
     $this->model->mapSerializer('test-key', JsonValueSerializer::class);
 })->throws(DuplicateKeyException::class);

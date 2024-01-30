@@ -8,5 +8,4 @@ use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\MetaCacheHelper as BaseM
 
 class MetaCacheHelper extends BaseMetaCache
 {
-
 }

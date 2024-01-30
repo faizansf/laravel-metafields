@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 it('should use strict types')
     ->expect('FaizanSf\LaravelMetafields')
-      ->toUseStrictTypes();
+    ->toUseStrictTypes();
 it('will not use debugging functions')
     ->expect(['dd', 'dump', 'ray'])
     ->each->not->toBeUsed();
@@ -41,4 +41,3 @@ it('has serializers in src/Support/ValueSerializers')
     ->toHaveSuffix('ValueSerializer')
     ->toImplement(ValueSerializer::class)
     ->toBeFinal();
-

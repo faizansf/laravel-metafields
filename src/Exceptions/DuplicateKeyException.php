@@ -10,7 +10,6 @@ class DuplicateKeyException extends Exception
 {
     public static function withMessage($normalizedKey, $serializer): self
     {
-        return new self($normalizedKey . " is already mapped to " . $serializer);
+        return new self($normalizedKey.' is already mapped to '.$serializer);
     }
-
 }

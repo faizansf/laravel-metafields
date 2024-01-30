@@ -8,7 +8,9 @@ use FaizanSf\LaravelMetafields\Contracts\DataTransferObject;
 
 final class NormalizedKey implements DataTransferObject
 {
-    public function __construct(public string $key){}
+    public function __construct(public string $key)
+    {
+    }
 
     public function __toString(): string
     {

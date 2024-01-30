@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace FaizanSf\LaravelMetafields\Models;
 
-use Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property $key
@@ -27,7 +25,6 @@ class Metafield extends Model
      * @var array<int, string>
      */
     protected $hidden = ['model_type', 'model_id'];
-
 
     public function __construct(array $attributes = [])
     {

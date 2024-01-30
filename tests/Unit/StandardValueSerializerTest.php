@@ -1,6 +1,5 @@
 <?php
 
-use FaizanSf\LaravelMetafields\Models\Metafield;
 use FaizanSf\LaravelMetafields\Support\ValueSerializers\StandardValueSerializer;
 use Workbench\App\Models\Person;
 

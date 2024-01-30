@@ -7,7 +7,7 @@ use FaizanSf\LaravelMetafields\Support\Helpers\NormalizeMetaKeyHelper;
 use Workbench\App\Enums\NonStringBackedEnum;
 use Workbench\App\Enums\PersonMetafieldEnum;
 
-beforeEach(function (){
+beforeEach(function () {
     $this->keyNormalizer = new NormalizeMetaKeyHelper;
 });
 
@@ -15,8 +15,8 @@ it('normalizes a string key', function () {
     $normalizedKey = $this->keyNormalizer->normalize('foo');
 
     expect($normalizedKey)
-    ->toBeInstanceOf(NormalizedKey::class)
-    ->and($normalizedKey->asString())->toBe('foo');
+        ->toBeInstanceOf(NormalizedKey::class)
+        ->and($normalizedKey->asString())->toBe('foo');
 });
 
 it('normalizes an enum key', function () {
@@ -31,17 +31,17 @@ it('throws an exception for invalid key', function () {
     $normalizedKey = $this->keyNormalizer->normalize(NonStringBackedEnum::ONE);
 })->throws(InvalidKeyException::class);
 
-it('throws an exception for invalid not_allowed_keys value', function (){
-   config()->set('metafields.not_allowed_keys', 'invalid');
+it('throws an exception for invalid not_allowed_keys value', function () {
+    config()->set('metafields.not_allowed_keys', 'invalid');
     $this->keyNormalizer->normalize('foo');
 })->throws(InvalidConfigurationException::class);
 
-it('returns throws an exception when a not allowed key is used', function (){
+it('returns throws an exception when a not allowed key is used', function () {
     config()->set('metafields.not_allowed_keys', ['foo']);
     $this->keyNormalizer->normalize('foo');
 })->throws(InvalidKeyException::class);
 
-it('normalizes keys of array', function (){
+it('normalizes keys of array', function () {
     $keys = ['foo', 'bar', 'baz'];
     $normalizedKeys = $this->keyNormalizer->normalizeKeys($keys);
 

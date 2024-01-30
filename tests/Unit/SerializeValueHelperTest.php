@@ -9,13 +9,13 @@ use FaizanSf\LaravelMetafields\Support\ValueSerializers\JsonValueSerializer;
 use FaizanSf\LaravelMetafields\Support\ValueSerializers\StandardValueSerializer;
 use Workbench\App\ValueSerializers\InvalidValueSerializer;
 
-beforeEach(function() {
+beforeEach(function () {
     $this->serializer = new SerializeValueHelper;
     $this->model = makePersonInstance();
     $this->keyNormalizer = new NormalizeMetaKeyHelper;
 });
 
-it('validates the provided serializer', function() {
+it('validates the provided serializer', function () {
     $serializer1 = ValueSerializer::class;
     $serializer2 = StandardValueSerializer::class;
     $serializer3 = Metafield::class;
@@ -25,7 +25,7 @@ it('validates the provided serializer', function() {
         ->and($this->serializer->isValidSerializer($serializer3))->toBe(false);
 });
 
-it('resolves the serializer for the provided field', function() {
+it('resolves the serializer for the provided field', function () {
     $this->model->mapSerializer('key', StandardValueSerializer::class);
     $this->model->mapSerializer('key-2', JsonValueSerializer::class);
 

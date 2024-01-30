@@ -24,7 +24,7 @@ beforeEach(function () {
     $this->cacheHelper = app(MetaCacheHelper::class);
     $this->valueSerializer = app(ValueSerializer::class);
 
-    $this->laravelMetafields = new  LaravelMetafields(
+    $this->laravelMetafields = new LaravelMetafields(
         $this->keyNormalizer,
         $this->serializeValueHelper,
         $this->cacheHelper
@@ -152,11 +152,10 @@ it('returns unserialized value', function ($value) {
     expect($unserializedValue)->toBe($value);
 })->with([
     ['bar' => 1, 'baz' => 'qux'],
-    'some-value'
+    'some-value',
 ]);
 
-
-it('returns unserialized value when getting all metafields', function(){
+it('returns unserialized value when getting all metafields', function () {
     $this->laravelMetafields->set('foo', 'bar');
     $this->laravelMetafields->set('quux', ['baz' => 'qu']);
 
@@ -168,7 +167,6 @@ it('returns unserialized value when getting all metafields', function(){
         ->and($metafields->get('foo'))->toBe('bar')
         ->and($metafields->get('quux'))->toBe(['baz' => 'qu']);
 });
-
 
 it('returns false when trying to delete a non-existent metafield', function () {
     $delete = $this->laravelMetafields->delete('foo');
@@ -196,7 +194,6 @@ it('deletes all metafields', function () {
     expect($metafields->isEmpty())->toBeTrue();
 });
 
-
 it('clears key cache and all metafield collection cache after delete', function () {
     $this->laravelMetafields->set('foo', 'bar');
 
@@ -223,12 +220,11 @@ it('clears key cache and all metafield collection cache after delete', function 
 });
 
 it('normalizers key and validate serializer', function () {
-   [$key, $serializer] = $this->laravelMetafields->getNormalizedKeyWithValidSerializer('some-key', StandardValueSerializer::class);
+    [$key, $serializer] = $this->laravelMetafields->getNormalizedKeyWithValidSerializer('some-key', StandardValueSerializer::class);
 
-   expect($key)->toBeInstanceOf(NormalizedKey::class)
-       ->and($serializer)->toBe(StandardValueSerializer::class);
+    expect($key)->toBeInstanceOf(NormalizedKey::class)
+        ->and($serializer)->toBe(StandardValueSerializer::class);
 });
-
 
 it('temporarily disables cache for the current call', function () {
     Cache::shouldReceive('remember')->never();
@@ -257,4 +253,3 @@ it('resolves a serializer for a given key correctly', function () {
     // the correct serializer and serialize to json as intended
     expect($metafield->value)->toBe($json);
 });
-

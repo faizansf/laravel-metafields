@@ -15,21 +15,22 @@ abstract class NormalizeMetaKeyHelper
     /**
      * Normalizes the given key into a string.
      *
-     * @param string|BackedEnum $key The key to normalize. Can be either a string or a BackedEnum instance.
-     * @param bool $ignoreKeyValidation
+     * @param  string|BackedEnum  $key  The key to normalize. Can be either a string or a BackedEnum instance.
      * @return NormalizedKey The normalized key as a string.
+     *
      * @throws InvalidKeyException
      */
     public function normalize(string|BackedEnum $key, bool $ignoreKeyValidation = false): NormalizedKey
     {
         $keyValue = $key instanceof BackedEnum ? $key->value : $key;
 
-        if (!$ignoreKeyValidation && !$this->isValidKey($keyValue)) {
+        if (! $ignoreKeyValidation && ! $this->isValidKey($keyValue)) {
             throw InvalidKeyException::withMessage(key: $keyValue);
         }
 
         return new NormalizedKey($keyValue);
     }
+
     /**
      * Normalizes the given keys into a string and returns the normalized key array
      *
@@ -52,7 +53,7 @@ abstract class NormalizeMetaKeyHelper
     private function isValidKey(mixed $key): bool
     {
         return is_string($key) &&
-            !in_array($key, $this->getNotAllowedKeys(), true) &&
+            ! in_array($key, $this->getNotAllowedKeys(), true) &&
             $key !== config('metafields.all_metafields_cache_key');
     }
 
@@ -61,10 +62,11 @@ abstract class NormalizeMetaKeyHelper
      *
      * @return array<int, string>
      */
-    private function getNotAllowedKeys(): array {
+    private function getNotAllowedKeys(): array
+    {
         $notAllowedConfig = config('metafields.not_allowed_keys', []);
 
-        if (!is_array($notAllowedConfig)) {
+        if (! is_array($notAllowedConfig)) {
             throw InvalidConfigurationException::withMessage("'not_allowed_keys' should be an array");
         }
 

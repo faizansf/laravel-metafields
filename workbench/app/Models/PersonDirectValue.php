@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Workbench\Database\Factories\PersonDirectValueFactory;
-use Workbench\Database\Factories\PersonFactory;
 
 class PersonDirectValue extends Model implements Metafieldable
 {

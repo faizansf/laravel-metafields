@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FaizanSf\LaravelMetafields;
 
 use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
-use FaizanSf\LaravelMetafields\Exceptions\InvalidValueSerializerException;
 use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\MetaCacheHelper as BaseCacheHelper;
 use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\NormalizeMetaKeyHelper as BaseNormalizeMetaKeyHelper;
 use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\SerializeValueHelper as BaseSerializeValueHelper;

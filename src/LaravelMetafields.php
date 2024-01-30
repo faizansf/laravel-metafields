@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace FaizanSf\LaravelMetafields;
 
-
 use BackedEnum;
 use Closure;
-use Exception;
 use FaizanSf\LaravelMetafields\Contracts\Metafieldable;
 use FaizanSf\LaravelMetafields\Contracts\ValueSerializer;
 use FaizanSf\LaravelMetafields\DataTransferObjects\NormalizedKey;
-use FaizanSf\LaravelMetafields\Exceptions\BadMethodCallException;
 use FaizanSf\LaravelMetafields\Exceptions\InvalidKeyException;
 use FaizanSf\LaravelMetafields\Exceptions\InvalidValueSerializerException;
 use FaizanSf\LaravelMetafields\Exceptions\ModelNotSetException;
@@ -21,11 +18,8 @@ use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\MetaCacheHelper;
 use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\NormalizeMetaKeyHelper;
 use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\SerializeValueHelper;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Schema;
 
 class LaravelMetafields
 {
@@ -41,20 +35,14 @@ class LaravelMetafields
 
     public function __construct(
         NormalizeMetaKeyHelper $keyNormalizer,
-        SerializeValueHelper   $serializeValueHelper,
-        MetaCacheHelper        $cacheHelper
-    )
-    {
+        SerializeValueHelper $serializeValueHelper,
+        MetaCacheHelper $cacheHelper
+    ) {
         $this->keyNormalizer = $keyNormalizer;
         $this->serializeValueHelper = $serializeValueHelper;
         $this->cacheHelper = $cacheHelper;
     }
 
-    /**
-     *
-     * @param Metafieldable $model
-     * @return self
-     */
     public function setModel(Metafieldable $model): self
     {
         $this->model = $model;
@@ -64,9 +52,7 @@ class LaravelMetafields
 
     /**
      * Set a Metafield
-     * @param string|BackedEnum $key
-     * @param $value
-     * @return mixed
+     *
      * @throws ModelNotSetException
      * @throws InvalidKeyException
      * @throws InvalidValueSerializerException
@@ -91,9 +77,6 @@ class LaravelMetafields
     }
 
     /**
-     * @param string|BackedEnum $key
-     * @param mixed $default
-     * @return mixed
      * @throws ModelNotSetException
      * @throws InvalidKeyException
      * @throws InvalidValueSerializerException
@@ -117,7 +100,7 @@ class LaravelMetafields
 
     /**
      * Get All the metafields
-     * @return Collection
+     *
      * @throws ModelNotSetException
      * @throws InvalidValueSerializerException
      * @throws InvalidKeyException
@@ -137,11 +120,9 @@ class LaravelMetafields
         }, $this->normalizeAllMetafieldsKey());
     }
 
-
     /**
      * Delete a metafield by key
-     * @param string|BackedEnum $key
-     * @return bool
+     *
      * @throws ModelNotSetException
      * @throws InvalidKeyException
      */
@@ -159,7 +140,7 @@ class LaravelMetafields
             $this->model->refresh();
 
             $this->clearCacheByKeys([
-                $normalizedKey, $this->normalizeAllMetafieldsKey()
+                $normalizedKey, $this->normalizeAllMetafieldsKey(),
             ]);
 
             return true;
@@ -170,7 +151,7 @@ class LaravelMetafields
 
     /**
      * Delete all metafields of a given model
-     * @return int
+     *
      * @throws ModelNotSetException
      */
     public function deleteAll(): int
@@ -192,9 +173,9 @@ class LaravelMetafields
 
     /**
      * Normalize the given key and map it with the given serializer after validation
-     * @param string|BackedEnum $key
-     * @param string $serializer
+     *
      * @return array<NormalizedKey, string>
+     *
      * @throws InvalidKeyException
      * @throws ModelNotSetException
      * @throws InvalidValueSerializerException
@@ -205,17 +186,13 @@ class LaravelMetafields
 
         $normalizedKey = $this->normalizeKey($key);
 
-        if (!$this->serializeValueHelper->isValidSerializer($serializer)) {
+        if (! $this->serializeValueHelper->isValidSerializer($serializer)) {
             throw new InvalidValueSerializerException($serializer);
         }
 
         return [$normalizedKey, $serializer];
     }
 
-    /**
-     * @param $temporaryDisabledCache
-     * @return void
-     */
     public function setTemporaryDisableCache($temporaryDisabledCache): void
     {
         $this->temporaryDisableCache = $temporaryDisabledCache;
@@ -223,7 +200,6 @@ class LaravelMetafields
 
     /**
      * For Testing purposes
-     * @return void
      */
     public function unsetModel(): void
     {
@@ -232,7 +208,6 @@ class LaravelMetafields
 
     /**
      * Temporarily disable cache for current call
-     * @return WithoutCacheLaravelMetafieldsProxy
      */
     public function withOutCache(): WithoutCacheLaravelMetafieldsProxy
     {
@@ -240,8 +215,6 @@ class LaravelMetafields
     }
 
     /**
-     * @param NormalizedKey $key
-     * @return void
      * @throws ModelNotSetException
      */
     private function clearCacheByKey(NormalizedKey $key): void
@@ -253,8 +226,9 @@ class LaravelMetafields
 
     /**
      * Clear cache of multiple keys.
-     * @param NormalizedKey[] $keys Array of NormalizedKey objects.
-     * @return void
+     *
+     * @param  NormalizedKey[]  $keys  Array of NormalizedKey objects.
+     *
      * @throws ModelNotSetException
      */
     private function clearCacheByKeys(array $keys): void
@@ -264,22 +238,19 @@ class LaravelMetafields
         }
     }
 
-
     /**
      * Ensure that the model is valid
-     * @return void
+     *
      * @throws ModelNotSetException
      */
     private function ensureModelIsValid(): void
     {
-        if (!$this->model) {
+        if (! $this->model) {
             throw ModelNotSetException::withMessage();
         }
     }
 
     /**
-     * @param NormalizedKey $key
-     * @return Metafield|null
      * @throws ModelNotSetException
      */
     private function getMetafieldRow(NormalizedKey $key): ?Metafield
@@ -298,18 +269,14 @@ class LaravelMetafields
 
     /**
      * Checks if cache is enabled and the current instance is configured to use it.
-     * @return bool
      */
     private function canUseCache(): bool
     {
-        return $this->model->shouldCacheMetafields() && !$this->temporaryDisableCache;
+        return $this->model->shouldCacheMetafields() && ! $this->temporaryDisableCache;
     }
 
     /**
      * Executes the given closure and caches its result for the given time if cache is enabled.
-     * @param Closure $callback
-     * @param NormalizedKey $key
-     * @return mixed
      */
     private function runCachedOrDirect(Closure $callback, NormalizedKey $key): mixed
     {
@@ -322,9 +289,6 @@ class LaravelMetafields
     }
 
     /**
-     * @param string|BackedEnum $key
-     * @param bool $ignoreKeyValidation
-     * @return NormalizedKey
      * @throws InvalidKeyException
      */
     private function normalizeKey(string|BackedEnum $key, bool $ignoreKeyValidation = false): DataTransferObjects\NormalizedKey
@@ -333,7 +297,6 @@ class LaravelMetafields
     }
 
     /**
-     * @return NormalizedKey
      * @throws InvalidKeyException
      */
     private function normalizeAllMetafieldsKey(): NormalizedKey
@@ -343,8 +306,7 @@ class LaravelMetafields
 
     /**
      * Resolve serializer for the given metafield key
-     * @param NormalizedKey $key
-     * @return ValueSerializer
+     *
      * @throws InvalidValueSerializerException
      */
     private function resolveSerializer(NormalizedKey $key): ValueSerializer
@@ -353,9 +315,6 @@ class LaravelMetafields
     }
 
     /**
-     * @param NormalizedKey $key
-     * @param $value
-     * @return string
      * @throws InvalidValueSerializerException
      */
     private function serialize(NormalizedKey $key, $value): string
@@ -366,9 +325,7 @@ class LaravelMetafields
 
     /**
      * Unserializes Value
-     * @param NormalizedKey $key
-     * @param $value
-     * @return mixed
+     *
      * @throws InvalidValueSerializerException
      */
     private function unserialize(NormalizedKey $key, $value): mixed
@@ -376,5 +333,4 @@ class LaravelMetafields
         return $this->resolveSerializer($key)
             ->unserialize($value);
     }
-
 }

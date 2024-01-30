@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace FaizanSf\LaravelMetafields\Proxies;
@@ -16,24 +17,26 @@ use Illuminate\Support\Collection;
  * It allows for operations on the LaravelMetafields instance
  * to be executed without utilizing the cache, then restores the original cache
  * settings after the operation is complete.
+ *
  * @method mixed get(string|BackedEnum $key, mixed $default = null)
  * @method Collection getAll(array $default = [])
  */
 final class WithoutCacheLaravelMetafieldsProxy
 {
     /**
-     * @var array $allowedMethods Methods from LaravelMetafields class added to this array will be allowed to be executed through this proxy
+     * @var array Methods from LaravelMetafields class added to this array will be allowed to be executed through this proxy
      */
     private array $allowedMethods = [
-        'get', 'getAll'
+        'get', 'getAll',
     ];
 
     /**
-     * @param LaravelMetafields $parent The LaravelMetafields instance to proxy.
+     * @param  LaravelMetafields  $parent  The LaravelMetafields instance to proxy.
      */
     public function __construct(
         private readonly LaravelMetafields $parent)
-    {}
+    {
+    }
 
     /**
      * Magic method to handle method calls to the proxied LaravelMetafields instance.
@@ -47,7 +50,7 @@ final class WithoutCacheLaravelMetafieldsProxy
      */
     public function __call(string $name, array $arguments)
     {
-        if (!method_exists($this->parent, $name) || !$this->isMethodAllowed($name)) {
+        if (! method_exists($this->parent, $name) || ! $this->isMethodAllowed($name)) {
             throw BadMethodCallException::withMessage($name, $this->allowedMethods);
         }
         //Temporary disabled cache
@@ -63,8 +66,6 @@ final class WithoutCacheLaravelMetafieldsProxy
 
     /**
      * Check whether a method is allowed to be called from Proxy
-     * @param $methodName
-     * @return bool
      */
     private function isMethodAllowed($methodName): bool
     {

@@ -8,5 +8,4 @@ use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\SerializeValueHelper as 
 
 class SerializeValueHelper extends BaseMetaValueSerializer
 {
-
 }
