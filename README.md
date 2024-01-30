@@ -173,7 +173,7 @@ $person->withoutCache()->getAllMetafields();
 The package includes `StandardValueSerializer`, `DirectValueSerializer` and `JsonValueSerializer` classes.
 You can choose a default serializer for all fields in the `metafields.php` configuration file.
 Additionally, you can define
-a `$metafieldSerializers` array inside your model, or you can implement a static `registerSerializers()` method 
+a `$metafieldSerializers` array inside your model, or you can implement a protected `registerSerializers()` method 
 in your model to override the default serialization behavior.
 The `registerSerializers()` method will then use `mapSerializer()` method provided by `HasMetafields` trait 
 to register the serializers.
