@@ -18,7 +18,6 @@ use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\MetaCacheHelper;
 use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\NormalizeMetaKeyHelper;
 use FaizanSf\LaravelMetafields\Support\Helpers\Abstract\SerializeValueHelper;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -173,9 +172,6 @@ class LaravelMetafields
     /**
      * Normalize the given key and map it with the given serializer after validation
      *
-     * @param string|BackedEnum $key
-     * @param string $serializer
-     * @return array
      *
      * @throws InvalidKeyException
      * @throws InvalidValueSerializerException
@@ -254,7 +250,7 @@ class LaravelMetafields
     /**
      * @throws ModelNotSetException
      */
-    private function getMetafieldRow(NormalizedKey $key): Model|null
+    private function getMetafieldRow(NormalizedKey $key): ?Model
     {
         $this->ensureModelIsValid();
 

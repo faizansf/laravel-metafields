@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 
 /**
  * @property-read \Illuminate\Database\Eloquent\Collection|Metafield[] $metafields
+ *
  * @method mixed getKey()
  */
 interface Metafieldable
@@ -40,21 +41,16 @@ interface Metafieldable
 
     /**
      * Check whether to cache the metafields
-     * @return bool
      */
     public function shouldCacheMetafields(): bool;
 
-
     /**
      * Get models TTL
-     * @return int
      */
     public function getTtl(): int;
 
     /**
      * Get Serializer for the given field in the model
-     * @param NormalizedKey $key
-     * @return mixed
      */
     public function getValueSerializer(NormalizedKey $key): mixed;
 }
