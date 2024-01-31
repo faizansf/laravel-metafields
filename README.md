@@ -114,7 +114,6 @@ You can also provide a default value when getting a metafield
 ```php
 //using HasMetafields trait
 $person->getMetafield('some-key', 'default value');
-$person->getAllMetafields(['some-key' => 'default value']);
 ```
 
 >**Note:**<br/>
